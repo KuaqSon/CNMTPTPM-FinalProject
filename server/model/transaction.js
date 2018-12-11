@@ -20,8 +20,8 @@ var TransactionSchema = mongoose.Schema({
         required: true
     },
     
-    create: {
-        default: Date.now
+    created: {
+        type: Date,
    },
     isDelete: {
         type: boolean,

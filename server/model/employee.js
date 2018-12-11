@@ -11,8 +11,10 @@ username: {
 password: {
     type: String,
     required: false
-}
-
+},
+created: {
+    type: Date,
+},
 });
 
 var Employee = module.exports = mongoose.model('Employee', EmployeeSchema);

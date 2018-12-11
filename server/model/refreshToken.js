@@ -12,9 +12,9 @@ var rfTokenSchema = mongoose.Schema({
     type: String,
     required: true
    },
-    create: {
-        default: Date.now
-   }
+   created: {
+      type: Date,
+ },
 
 });
 

@@ -23,11 +23,7 @@ var UserSchema = mongoose.Schema({
         type: String,
         required: false
     },
-    admin: {
-        type: Number
-    },
-    
-    gmail:{
+    email:{
         type: String,
         required: true
     },
@@ -36,14 +32,14 @@ var UserSchema = mongoose.Schema({
         required: true
     },
     isAcive: {
-        type: boolean,
+        type: Boolean,
         default: true
     },
-    create: {
-        default: Date.now
+    created: {
+        type: Date,
    },
     isDelete: {
-        type: boolean,
+        type: Boolean,
         default: false
     }
     
