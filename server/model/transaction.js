@@ -9,7 +9,7 @@ var TransactionSchema = mongoose.Schema({
    // transfer money to who?
    transferTo: {
     type: String,
-    required: true
+    // required: true
     },
     transferMoney: {
         type: Number,
@@ -24,7 +24,7 @@ var TransactionSchema = mongoose.Schema({
         type: Date,
    },
     isDelete: {
-        type: boolean,
+        type: Boolean,
         default: false
     }
     

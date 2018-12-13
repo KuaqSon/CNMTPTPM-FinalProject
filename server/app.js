@@ -27,9 +27,11 @@ app.use(bodyParser.json());
 
 
 var User = require('./router/controlUser');
+var Transaction = require('./router/controlTransaction');
 
 
 app.use('/user', User);
+app.use('/transaction', Transaction);
 
 
 

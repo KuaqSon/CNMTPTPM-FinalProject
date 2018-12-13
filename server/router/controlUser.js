@@ -8,6 +8,14 @@ const rfToken = require('../model/refreshToken');
 const moment = require('moment')
 // const User = require('../model/user');
 
+
+
+router.get('', function(req, res){
+    User.find(function (err, users){
+        res.json({users: users});
+    } )
+})
+
 router.post('/add-user', function (req, res) {
     var name = req.body.name;
     var accountNumber = req.body.accountNumber;
