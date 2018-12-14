@@ -2,9 +2,9 @@ var express = require('express');
 var User = require('../model/user');
 var router = express.Router();
 var bcrypt = require('bcrypt');
-var passport = require('passport');
-var authToken = require('../config/token');
-const rfToken = require('../model/refreshToken');
+// var passport = require('passport');
+// var authToken = require('../config/token');
+// const rfToken = require('../model/refreshToken');
 const moment = require('moment')
 // const User = require('../model/user');
 

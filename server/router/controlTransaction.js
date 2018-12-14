@@ -73,7 +73,7 @@ router.post('/add-transaction', function (req, res) {
 
                         })
                     } else {
-                        // var test = new Promise(() => {
+                        // Verify Receiver 
                         User.findOne({
                             accountNumber: transferTo
                         }).then(tranfer => {
@@ -97,16 +97,15 @@ router.post('/add-transaction', function (req, res) {
                                                 });
                                                 return;
                                             }
-                                            res.json({
-                                                msg: "Success transfer money!"
-                                            })
-                                            return;
+                                           
 
                                         });
                                     }
 
                                 });
-                                
+                                // end sub money of User
+
+
                                 tranfer.asset += Number(transferMoney);
                                 tranfer.save(function (err) {
                                     if (err) {
@@ -118,25 +117,30 @@ router.post('/add-transaction', function (req, res) {
                                     };
                                 })
 
-                                
-                                // user.asset = Number(user.asset) - Number(transferMoney);
-                                // user.save(function (err) {
-                                //     if (err) {
-                                //         console.log(err);
-                                //         res.json({
-                                //             msg: err
-                                //         });
-                                //         return;
-                                //     }
-                                //     res.json({
-                                //         msg: "Success transfer money!"
-                                //     })
-                                //     return;
+                                // add Transaction
+                                var transaction = new Transaction({
+                                    idUser: idUser,
+                                    transferTo: transferTo,
+                                    transferMoney: transferMoney,
+                                    infor: infor,
+                                    create: Date.now()
+                                })
+                                transaction.save(function (err) {
+                                    if (err) {
+                                        console.log(err)
+                                        res.json({
+                                            msg: err
+                                        });
+                                        return;
+                                    } else {
+                                        res.json({
+                                            msg: "Success transfer money!"
+                                        })
+                                        return;
+                                    }
+                                })
+                                // end add Transaction
 
-
-
-
-                                // })
 
                             } else {
                                 res.json({
@@ -144,18 +148,7 @@ router.post('/add-transaction', function (req, res) {
                                 });
                                 return;
                             }
-
                         })
-
-
-
-                        // Verify Receiver 
-
-
-
-
-
-
 
                     }
 
@@ -163,8 +156,6 @@ router.post('/add-transaction', function (req, res) {
             }
         });
 
-
-        // end sub money of User
 
 
         // end of Transfer transaction
@@ -184,6 +175,7 @@ router.post('/add-transaction', function (req, res) {
                     });
                 } else {
                     if (user) {
+
                         user.asset = Number(user.asset) + Number(transferMoney);
                         user.save(function (err) {
                             if (err) {
@@ -215,6 +207,7 @@ router.post('/add-transaction', function (req, res) {
                                 })
                                 // end add Transaction
                             }
+
                         });
                     } else {
                         console.log("user is not exited!");
