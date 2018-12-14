@@ -97,7 +97,7 @@ router.post('/add-transaction', function (req, res) {
                                                 });
                                                 return;
                                             }
-                                           
+
 
                                         });
                                     }
@@ -231,146 +231,30 @@ router.post('/add-transaction', function (req, res) {
     }
 });
 
+router.post('/history', function (req, res) {
+    const idUser = req.body.idUser;
+    console.log(idUser);
+    Transaction.find({
+        idUser: idUser
+    }, function (err, transactions) {
+        if (err) {
+            console.log(err);
+            res.statusCode = 400;
+            res.json({
+                msg: "Can't get history of transaction!"
+            });
+        } else {
+            res.json({
 
+                transactions: transactions,
+
+            })
+        }
+    })
+})
 
 
 // function necessary: return 1 if success, return 0 if fail
 /*****************************************************/
-updateUser = (user) => {
-    user.save()
-}
 
-verifyAccountNumber = (accountNumber) => {
-    return new Promise(() => {
-        User.findOne({
-            accountNumber: accountNumber
-        }).then(user => {
-            if (user) {
-                console.log(user);
-                return true;
-            }
-            return false;
-        })
-    })
-
-
-
-}
-
-
-addMoneyByAccountNumber = (money, accountNumber) => {
-    User.findOne({
-        accountNumber: accountNumber
-    }, function (err, user) {
-        if (err) {
-            console.log(err);
-            return 0;
-        } else {
-            if (user) {
-                user.asset += money;
-                user.save(function (err) {
-                    if (err) {
-                        console.log(err);
-                        return 0;
-                    }
-                }).then(() => {
-                    console.log("Much return 1");
-                    return 1;
-
-                })
-
-
-            } else {
-                console.log("user is not exited!");
-                return 0;
-            }
-        }
-    })
-    return 1;
-}
-
-subMoney = (money, idUser) => {
-    User.findOne({
-        _id: idUser
-    }, function (err, user) {
-        if (err) {
-            console.log(err);
-            return;
-        } else {
-            if (user) {
-                user.asset -= Number(money);
-                user.save(function (err) {
-                    if (err) {
-                        console.log(err);
-                        return 0;
-                    }
-                });
-                return 1;
-
-            } else {
-                console.log("user is not exited!");
-                return 0;
-            }
-        }
-    });
-    return 1;
-
-}
-
-function addMoney(money, idUser) {
-    var res = 0;
-    User.findOne({
-        _id: idUser
-    }, function (err, user) {
-        if (err) {
-            console.log(err);
-            res = 0;
-        } else {
-            if (user) {
-                user.asset = Number(user.asset) + Number(money);
-                user.save(function (err) {
-                    if (err) {
-                        console.log(err);
-                        res = 0;
-                    } else {
-                        res = 1;
-
-
-                        console.log("Much return 1.q");
-                        console.log(res);
-                        return res;
-                    }
-                });
-                return res;
-            } else {
-                console.log("user is not exited!");
-                res = 0;
-            }
-
-        }
-
-    })
-    // console.log(res);
-
-    return res;
-}
-
-addTransaction = (idUser, transferTo, transferMoney, infor) => {
-    var transaction = new Transaction({
-        idUser: idUser,
-        transferTo: transferTo,
-        transferMoney: transferMoney,
-        infor: infor,
-        create: Date.now()
-    })
-    transaction.save(function (err) {
-        if (err) {
-            console.log(err)
-            return 0;
-        }
-        return 1;
-    })
-    return 1;
-
-}
 module.exports = router;

@@ -24,16 +24,7 @@ router.post('/add-user', function (req, res) {
     var email = req.body.email;
     var phoneNumber = req.body.phoneNumber;
 
-    // User.findOne({
-    //     username: username
-    // }, function (err,user) {
-    //     console.log(user);
-    //     if(user)
-    //     res.json("dm la co");
-    //     else 
-    //     res.json("dm la deo");
 
-    // });
 
     User.findOne({
         username: username

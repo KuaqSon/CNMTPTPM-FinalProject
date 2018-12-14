@@ -6,7 +6,7 @@ var passport = require('passport');
 var authToken = require('../config/token');
 const rfToken = require('../model/refreshToken');
 const moment = require('moment');
-
+const Transaction = require('../model/transaction');
 
 
 router.get('/rftokens', function(req, res){
@@ -70,6 +70,26 @@ router.post('/logout', function(req, res){
         }
     })
 })
+router.post('/history', function (req, res) {
+    const idUser = req.body.idUser;
+    console.log(idUser);
+    Transaction.find({
+        idUser: idUser
+    }, function (err, transactions) {
+        if (err) {
+            console.log(err);
+            res.statusCode = 400;
+            res.json({
+                msg: "Can't get history of transaction!"
+            });
+        } else {
+            res.json({
 
+                transactions: transactions,
+
+            })
+        }
+    })
+})
 
 module.exports = router;
