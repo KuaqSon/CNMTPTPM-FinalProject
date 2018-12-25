@@ -26,15 +26,16 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 
-var User = require('./router/controlUser');
+var User = require('./router/userAPI');
 var Transaction = require('./router/controlTransaction');
-var Activity = require('./router/activitiesUser')
+var Activity = require('./router/userAPI'); 
+var Employee = require('./router/employeeAPI');
 
 
 app.use('/user', User);
-app.use('/transaction', Transaction);
-app.use('/activity',Activity );
-
+// app.use('/transaction', Transaction);
+// app.use('/activity',Activity );
+app.use('/employee', Employee);
 
 
 function normalizePort(val) {

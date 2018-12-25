@@ -2,7 +2,8 @@ var mongoose = require('mongoose');
 
 // User Schema
 var TransactionSchema = mongoose.Schema({
-   idUser: {
+
+   accountNumber: {
     type: String,
     required: true
    },

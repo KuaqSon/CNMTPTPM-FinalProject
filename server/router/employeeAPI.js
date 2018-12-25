@@ -8,7 +8,7 @@ var bcrypt = require('bcrypt');
 const moment = require('moment')
 // const User = require('../model/user');
 
-
+const Account = require('../model/account');
 
 router.get('', function(req, res){
     User.find(function (err, users){
@@ -37,17 +37,6 @@ router.post('/add-user', function (req, res) {
                 msg: "Username exists, choose another!"
             })
         } else {
-            // User.findOne({
-            //     accountNumber: accountNumber
-            // }, function (err,user) {
-            //     if(err)
-            //     console.log(err);
-            //     if (user) {
-            //         console.log("accountNumber exited!");
-            //         res.json({
-            //             msg: "Account Number exists, choose another!"
-            //         })
-            //     } else {
                     const user = new User({
                         name: name,
                         // accountNumber: accountNumber,
@@ -56,6 +45,7 @@ router.post('/add-user', function (req, res) {
                         password: password,
                         email: email,
                         phoneNumber: phoneNumber,
+                        numberOfAccount: 0,
                         created: moment().format()
 
                     })
@@ -83,14 +73,47 @@ router.post('/add-user', function (req, res) {
                     })
                 }
             })
-
-
-        // }
-        
-
-    // })
-    
 });
 
+router.post('/add-account', function(req, res){
+    var idUser = req.body.idUser;
+    var accountNumber = req.body.accountNumber;
+    var asset = req.body.asset;
+    var isAcive = true;
+    
+    User.findOne({
+        idUser: idUser
+    }, function(err, user){
+        if(user){
+            if(user.numberOfAccount >= 2){
+                res.json({
+                    msg: "User just have 2 account!"
+                })
+            } else {
+                var account = new Account({
+                    idUser: idUser,
+                    accountNumber: accountNumber,
+                    asset: asset,
+                    isAcive: isAcive
+                });
+                account.save(function(err){
+                    if(err){
+                        res.json({
+                            msg: "err"
+                        });
+                        return;
+                    }
+                });
+                user.numberOfAccount ++;
+                user.save();
+            }
+        } else{
+            res.json({
+                msg: "User not found!"
+            });
+        }
+    });
+
+});
 
 module.exports = router;

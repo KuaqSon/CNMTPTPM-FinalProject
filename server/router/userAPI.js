@@ -1,44 +1,90 @@
 var express = require('express');
+var User = require('../model/user');
 var router = express.Router();
 var bcrypt = require('bcrypt');
 var passport = require('passport');
 var authToken = require('../config/token');
 const rfToken = require('../model/refreshToken');
 const moment = require('moment');
+const Transaction = require('../model/transaction');
+const Account = require('../model/account');
 
-
-var Transaction = require('../model/transaction');
-const User = require('../model/user');
-const Account = require('../model/account')
-
-router.get('', function (req, res) {
-    Transaction.find({}, function (err, transactions) {
+router.get('/rftokens', function(req, res){
+    rfToken.find(function(err, rftokens){
         res.json({
-            transactions: transactions
+            rftokens: rftokens
         })
     })
-
 })
 
-verify = (id) => {
-    var test = User.findById(id).exec();
-    console.log(test);
+router.post('/login', function (req, res) {
+    const username = req.body.username;
+    const password = req.body.password;
+    User.findOne({
+        username: username
+    }, function(err, user){
+        if(err){
+            console.log(err);
+            res.json({
+                msg: "err"
+            })
+            res.statusCode = 401;
+            return;
+        }
+        if(user){
+            bcrypt.compare(password, user.password, function(err, isMatch){
+                if(isMatch){
+                    var acceptToken = authToken.generateAccessToken(user);
+                    var rfToken = authToken.generateRefreshToken();
+                    authToken.updateRefreshToken(user._id,rfToken);
+                    Account.find({idUser: user._id}, function(err, accounts){
+                        if(accounts){
+                            res.json({
+                                auth: true,
+                                user: user,
+                                acceptToken: acceptToken,
+                                accounts: accounts,
+                                rfToken: rfToken
+                            })
+                        } else {
+                            res.json({
+                                auth: true,
+                                user: user,
+                                acceptToken: acceptToken,
+                                accounts: '',
+                                rfToken: rfToken
+                            })
+                        }
+                    })
+                    
+                }
+            })
+        } else {
+            res.json({
+                msg:"User not exits"
+            });
+            return;
+        }
 
-}
-
-router.post('/find', function (req, res) {
-    var id = req.body.id;
-
-    User.findById(id).exec(function (err, user) {
-        // console.log(user);
-        res.json({ data: user });
-    });
-    // console.log(test);
-    // console.log(dm);
-    // res.json({data: dm});
+    })
+});
 
 
+router.post('/logout', function(req, res){
+    rfToken.findOneAndDelete({userId: req.body.userId}, function(err){
+        if(err){ console.log(err);
+            res.json({
+                msg: "did not success logout"
+            })
+        }
+        else{
+            res.json({
+                msg: "logout success!"
+            })
+        }
+    })
 })
+
 
 router.post('/add-transaction', function (req, res) {
     var accountNumber = req.body.accountNumber;
@@ -224,6 +270,7 @@ router.post('/add-transaction', function (req, res) {
     }
 });
 
+
 router.post('/history', function (req, res) {
     const accountNumber = req.body.accountNumber;
     // console.log(idUser);
@@ -243,9 +290,5 @@ router.post('/history', function (req, res) {
         }
     })
 })
-
-
-// function necessary: return 1 if success, return 0 if fail
-/*****************************************************/
 
 module.exports = router;

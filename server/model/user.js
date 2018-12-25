@@ -7,14 +7,7 @@ var UserSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    accountNumber: {
-        type: Number,
-        required: true
-    },
-    asset:{
-        type: Number,
-        default: 0
-    },
+
     username: {
         type: String,
         required: false
@@ -34,6 +27,10 @@ var UserSchema = mongoose.Schema({
     isAcive: {
         type: Boolean,
         default: true
+    },
+    numberOfAccount: {
+        type: Number,
+        default: 0
     },
     created: {
         type: Date,
