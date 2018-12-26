@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 
 // User Schema
 var rfTokenSchema = mongoose.Schema({
-   userId: {
+   idUser: {
     type: String,
     required: true
    },

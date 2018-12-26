@@ -10,7 +10,7 @@ var refreshToken = require('../model/refreshToken');
 // var User = require('../dbQuery/getUsers');
 
 const SECRETKEY = 'DOUBLESON';
-const AC_LIFETIME = 30;
+const AC_LIFETIME = 600;
 
 exports.generateAccessToken = userEntity => {
     var payload = {
@@ -66,10 +66,10 @@ exports.generateRefreshToken = () => {
     return rndToken.generate(size);
 }
 
-exports.updateRefreshToken = (userId, rfToken) => {
+exports.updateRefreshToken = (idUser, rfToken) => {
     return new Promise((resolve, reject) => {
 
-        refreshToken.findOne({ userId: userId }).exec((err, user) => {
+        refreshToken.findOne({ idUser: idUser }).exec((err, user) => {
             if (user) {
                 user.created = moment().format('YYYY-MM-DD HH:mm:ss');
                 user.rfToken = rfToken;
@@ -85,7 +85,7 @@ exports.updateRefreshToken = (userId, rfToken) => {
                 var userToken = new refreshToken({
                     rfToken: rfToken,
                     created: moment().format('YYYY-MM-DD HH:mm:ss'),
-                    userId: userId
+                    idUser: idUser
                 });
                 userToken.save(function(err){
                     if(err)

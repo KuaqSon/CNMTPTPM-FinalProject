@@ -9,8 +9,10 @@ const moment = require('moment');
 const Transaction = require('../model/transaction');
 const Account = require('../model/account');
 
-router.get('/rftokens', function(req, res){
-    rfToken.find(function(err, rftokens){
+var auth = authToken.verifyAccessToken;
+
+router.get('/rftokens', function (req, res) {
+    rfToken.find(function (err, rftokens) {
         res.json({
             rftokens: rftokens
         })
@@ -22,8 +24,8 @@ router.post('/login', function (req, res) {
     const password = req.body.password;
     User.findOne({
         username: username
-    }, function(err, user){
-        if(err){
+    }, function (err, user) {
+        if (err) {
             console.log(err);
             res.json({
                 msg: "err"
@@ -31,14 +33,14 @@ router.post('/login', function (req, res) {
             res.statusCode = 401;
             return;
         }
-        if(user){
-            bcrypt.compare(password, user.password, function(err, isMatch){
-                if(isMatch){
+        if (user) {
+            bcrypt.compare(password, user.password, function (err, isMatch) {
+                if (isMatch) {
                     var acceptToken = authToken.generateAccessToken(user);
                     var rfToken = authToken.generateRefreshToken();
-                    authToken.updateRefreshToken(user._id,rfToken);
-                    Account.find({idUser: user._id}, function(err, accounts){
-                        if(accounts){
+                    authToken.updateRefreshToken(user._id, rfToken);
+                    Account.find({ idUser: user._id }, function (err, accounts) {
+                        if (accounts) {
                             res.json({
                                 auth: true,
                                 user: user,
@@ -56,12 +58,12 @@ router.post('/login', function (req, res) {
                             })
                         }
                     })
-                    
+
                 }
             })
         } else {
             res.json({
-                msg:"User not exits"
+                msg: "User not exits"
             });
             return;
         }
@@ -70,23 +72,80 @@ router.post('/login', function (req, res) {
 });
 
 
-router.post('/logout', function(req, res){
-    rfToken.findOneAndDelete({userId: req.body.userId}, function(err){
-        if(err){ console.log(err);
+router.post('/logout', function (req, res) {
+    rfToken.findOneAndDelete({ userId: req.body.userId }, function (err) {
+        if (err) {
+            console.log(err);
             res.json({
                 msg: "did not success logout"
             })
         }
-        else{
+        else {
             res.json({
                 msg: "logout success!"
             })
         }
     })
-})
+});
+
+router.post('/updateToken', function (req, res) {
+    const idUser = req.body.idUser;
+    const refreshToken = req.body.rfToken;
+
+    rfToken.findOne({ idUser: idUser }, function (err, user) {
+        if (err) {
+            res.json({
+                auth: false,
+                msg: err
+            });
+            return;
+        } else {
+            if (user) {
+                // console.log(user._id)
+                if (user.rfToken === refreshToken) {
+                    User.findById(idUser, function (err, user) {
+                        if (err) {
+                            res.json({
+                                auth: false,
+                                msg: err
+                            });
+                            return;
+                        } else {
+                            var acToken = authToken.generateAccessToken(user);
+                            res.json({
+                                auth: true,
+                                user: user,
+                                acceptToken: acToken
+                            })
+                        }
+                    })
+                } else {
+                    rfToken.findOneAndDelete({ idUser: idUser }, function (err) {
+                        if (err) {
+                            console.log(err);
+                            res.json({
+                                msg: "did not success logout"
+                            })
+                        }
+                        else {
+                            res.json({
+                                msg: "logout success!"
+                            })
+                        }
+                    })
+                    res.json({
+                        auth: false,
+                    });
+                }
+            }
+        }
+    })
+
+});
 
 
-router.post('/add-transaction', function (req, res) {
+
+router.post('/add-transaction', auth, function (req, res) {
     var accountNumber = req.body.accountNumber;
     var transferTo = req.body.transferTo;
     var transferMoney = req.body.transferMoney;
@@ -123,7 +182,7 @@ router.post('/add-transaction', function (req, res) {
                             accountNumber: transferTo
                         }).then(tranfer => {
                             if (tranfer) {
-                                Account.findOne({accountNumber: accountNumber}).exec((err, user) => {
+                                Account.findOne({ accountNumber: accountNumber }).exec((err, user) => {
                                     if (err) {
                                         console.log(err);
                                         res.json({
@@ -270,18 +329,18 @@ router.post('/add-transaction', function (req, res) {
     }
 });
 
-router.post('/get-account', function(req, res){
+router.post('/get-account', auth, function (req, res) {
     const idUser = req.body.idUser;
 
     Account.find({
         idUser: idUser
-    }, function(err, accounts){
-        if(err){
+    }, function (err, accounts) {
+        if (err) {
             res.json({
-                msg:"Erro"
+                msg: "Erro"
             });
             return;
-        } else{
+        } else {
             res.json({
                 account: accounts
             });
@@ -289,7 +348,7 @@ router.post('/get-account', function(req, res){
     })
 })
 
-router.post('/history', function (req, res) {
+router.post('/history', auth, function (req, res) {
     const accountNumber = req.body.accountNumber;
     // console.log(idUser);
     Transaction.find({
@@ -309,7 +368,7 @@ router.post('/history', function (req, res) {
     })
 });
 
-router.post('/history-all', function (req, res) {
+router.post('/history-all', auth, function (req, res) {
     const idUser = req.body.idUser;
     // console.log(idUser);
     Transaction.find({
@@ -331,32 +390,31 @@ router.post('/history-all', function (req, res) {
 
 // finding account that wanna to tranfer
 
-router.post('/find-account', function(req, res){
+router.post('/find-account', auth, function (req, res) {
     const accountNumber = req.body.accountNumber;
 
-    Account.find({accountNumber: accountNumber}, function(err, account){
-        if(err){
+    Account.findOne({ accountNumber: accountNumber }, function (err, account) {
+        if (err) {
             res.json({
                 msg: err
             });
             return;
         } else {
-            if(account){
-                console.log(JSON.stringify(account).idUser);
-                User.findById(account.idUser, function(err, user){
-                    if(err){
+            if (account) {
+                User.findById(account.idUser, function (err, user) {
+                    if (err) {
                         res.json({
                             msg: err
                         });
                         return;
-                    } else{
-                        if(user){
+                    } else {
+                        if (user) {
                             res.json({
-                                Name: user.name,
+                                name: user.name,
                                 accountNumber: accountNumber
                             });
                             return;
-                        } else{
+                        } else {
                             res.json({
                                 msg: "User not found!"
                             });
