@@ -270,6 +270,24 @@ router.post('/add-transaction', function (req, res) {
     }
 });
 
+router.post('/get-account', function(req, res){
+    const idUser = req.body.idUser;
+
+    Account.find({
+        idUser: idUser
+    }, function(err, accounts){
+        if(err){
+            res.json({
+                msg:"Erro"
+            });
+            return;
+        } else{
+            res.json({
+                account: accounts
+            });
+        }
+    })
+})
 
 router.post('/history', function (req, res) {
     const accountNumber = req.body.accountNumber;
@@ -289,6 +307,66 @@ router.post('/history', function (req, res) {
             })
         }
     })
-})
+});
+
+router.post('/history-all', function (req, res) {
+    const idUser = req.body.idUser;
+    // console.log(idUser);
+    Transaction.find({
+        idUser: idUser
+    }, function (err, transactions) {
+        if (err) {
+            console.log(err);
+            res.statusCode = 400;
+            res.json({
+                msg: "Can't get history of transaction!"
+            });
+        } else {
+            res.json({
+                transactions: transactions,
+            })
+        }
+    })
+});
+
+// finding account that wanna to tranfer
+
+router.post('/find-account', function(req, res){
+    const accountNumber = req.body.accountNumber;
+
+    Account.find({accountNumber: accountNumber}, function(err, account){
+        if(err){
+            res.json({
+                msg: err
+            });
+            return;
+        } else {
+            if(account){
+                console.log(JSON.stringify(account).idUser);
+                User.findById(account.idUser, function(err, user){
+                    if(err){
+                        res.json({
+                            msg: err
+                        });
+                        return;
+                    } else{
+                        if(user){
+                            res.json({
+                                Name: user.name,
+                                accountNumber: accountNumber
+                            });
+                            return;
+                        } else{
+                            res.json({
+                                msg: "User not found!"
+                            });
+                            return;
+                        }
+                    }
+                })
+            }
+        }
+    })
+});
 
 module.exports = router;

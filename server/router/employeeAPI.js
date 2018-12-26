@@ -10,11 +10,18 @@ const moment = require('moment')
 
 const Account = require('../model/account');
 
-router.get('', function(req, res){
-    User.find(function (err, users){
-        res.json({users: users});
-    } )
+router.get('', function (req, res) {
+    User.find(function (err, users) {
+        res.json({ users: users });
+    })
 })
+
+router.get('/accounts', function (req, res) {
+    Account.find(function (err, accounts) {
+        res.json({ accounts: accounts });
+    })
+})
+
 
 router.post('/add-user', function (req, res) {
     var name = req.body.name;
@@ -27,87 +34,112 @@ router.post('/add-user', function (req, res) {
 
     User.findOne({
         username: username
-    }, function (err,user) {
+    }, function (err, user) {
         // console.log(user);
-        if(err)
-                console.log(err);
+        if (err)
+            console.log(err);
         if (user) {
             console.log("user exited!");
             res.json({
                 msg: "Username exists, choose another!"
             })
         } else {
-                    const user = new User({
-                        name: name,
-                        // accountNumber: accountNumber,
-                        username: username,
-                        asset: 0,
-                        password: password,
-                        email: email,
-                        phoneNumber: phoneNumber,
-                        numberOfAccount: 0,
-                        created: moment().format()
+            const user = new User({
+                name: name,
+                // accountNumber: accountNumber,
+                username: username,
+                asset: 0,
+                password: password,
+                email: email,
+                phoneNumber: phoneNumber,
+                numberOfAccount: 0,
+                created: moment().format()
 
-                    })
-                    bcrypt.genSalt(10, function(err, salt){
-                        bcrypt.hash(user.password, salt, function(err, hash){
-                            if(err)
-                            console.log(err);
-                            user.password = hash;
-
-                            user.save(function(err){
-                                if(err){
-                                    console.log(err);
-                                    res.json({msg: "err"});
-                                }else{
-                                    console.log("success");
-                                    User.find(function (err, users){
-                                        res.json({users: users});
-                                    } )
-                                    
-
-                                }
-
-                            })
-                        })
-                    })
-                }
             })
+            bcrypt.genSalt(10, function (err, salt) {
+                bcrypt.hash(user.password, salt, function (err, hash) {
+                    if (err)
+                        console.log(err);
+                    user.password = hash;
+
+                    user.save(function (err) {
+                        if (err) {
+                            console.log(err);
+                            res.json({ msg: "err" });
+                        } else {
+                            console.log("success");
+                            User.find(function (err, users) {
+                                res.json({ users: users });
+                            })
+
+
+                        }
+
+                    })
+                })
+            })
+        }
+    })
 });
 
-router.post('/add-account', function(req, res){
+router.get('/user', function (req, res) {
+    User.find({}, function (err, users) {
+        res.json({
+            msg: users
+        })
+    })
+});
+router.post('/add-account', function (req, res) {
     var idUser = req.body.idUser;
     var accountNumber = req.body.accountNumber;
     var asset = req.body.asset;
     var isAcive = true;
-    
+
     User.findOne({
-        idUser: idUser
-    }, function(err, user){
-        if(user){
-            if(user.numberOfAccount >= 2){
+        _id: idUser
+    }, function (err, user) {
+        if (user) {
+            if (user.numberOfAccount >= 2) {
                 res.json({
                     msg: "User just have 2 account!"
                 })
             } else {
-                var account = new Account({
-                    idUser: idUser,
-                    accountNumber: accountNumber,
-                    asset: asset,
-                    isAcive: isAcive
-                });
-                account.save(function(err){
-                    if(err){
+                Account.findOne({
+                    accountNumber: accountNumber
+                }, function (err, account) {
+                    if (account) {
                         res.json({
-                            msg: "err"
+                            msg: "account number exited"
                         });
                         return;
+                    } else {
+                        var account = new Account({
+                            idUser: idUser,
+                            accountNumber: accountNumber,
+                            asset: asset,
+                            created: moment().format(),
+                            isAcive: isAcive
+                        });
+                        account.save(function (err) {
+                            if (err) {
+                                res.json({
+                                    msg: "err"
+                                });
+                                return;
+                            } else {
+                                res.json({
+                                    account: account
+                                });
+                                user.numberOfAccount++;
+                                user.save();
+                                return;
+                            }
+                        });
+
                     }
-                });
-                user.numberOfAccount ++;
-                user.save();
+                })
             }
-        } else{
+        } else {
             res.json({
                 msg: "User not found!"
             });
