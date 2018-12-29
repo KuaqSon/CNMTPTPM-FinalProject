@@ -8,6 +8,47 @@ const rfToken = require('../model/refreshToken');
 const moment = require('moment');
 const Transaction = require('../model/transaction');
 const Account = require('../model/account');
+const OTP = require('../config/authOTP').generateGmailOTP;
+//
+// var sendgrid = require('sendgrid')(process.env.SENDGRID_API_KEY)
+// var sendgrid = require('@sendgrid/mail')
+// //
+// sendgrid.setApiKey('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');
+
+// router.post('/gmail', function(req,res){
+
+//     const msg = {
+//         to: 'nhattien11.nth@gmail.com',
+//         from: 'sonduongtranthai@gmail.com',
+//         subject: 'Xác nhận giao dịch',
+//         text: 'Ù ú quá mập địt địt!',
+//         html: '<strong>Mã bảo mật của bạn là KOlk0T99</strong>',
+//       };
+//       sendgrid.send(msg, function(err){
+//           if(err){
+//               return res.json({
+//                   err:err
+//               });
+//           } else{
+//               return res.json({
+//                   msg: msg
+//               })
+//           }
+//       });
+
+//     // sendgrid.send({
+//     //     to: 'nhattien11.nth@gmail.com',
+//     //     from: 'sonduongtranthai@gmail.com',
+//     //     subject: 'Ù ú mặp địt',
+//     //     text:'Ù ú quá mập địt địt!'
+//     // }, function(err, json){
+//     //     if(err){
+//     //         return console.log(err);
+
+//     //     }
+//     //     console.log(json);
+//     // })
+// });
 
 var auth = authToken.verifyAccessToken;
 
@@ -145,7 +186,7 @@ router.post('/updateToken', function (req, res) {
 
 
 
-router.post('/add-transaction', auth, function (req, res) {
+router.post('/add-transaction', OTP, function (req, res) {
     var accountNumber = req.body.accountNumber;
     var transferTo = req.body.transferTo;
     var transferMoney = req.body.transferMoney;

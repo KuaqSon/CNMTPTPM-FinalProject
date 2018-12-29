@@ -6,7 +6,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"
-
   },
   "keywords": [
     "rainbow"
@@ -14,6 +13,7 @@
   "author": "DoubleSon",
   "license": "ISC",
   "dependencies": {
+    "@sendgrid/mail": "^6.3.1",
     "bcrypt": "^3.0.2",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
@@ -29,6 +29,7 @@
     "http": "0.0.0",
     "jsonwebtoken": "^8.4.0",
     "lodash": "^4.17.11",
+    "messagebird": "^2.2.0",
     "moment": "^2.22.2",
     "mongodb": "^3.1.10",
     "mongoose": "^5.3.15",
@@ -37,6 +38,8 @@
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "rand-token": "^0.4.0",
+    "randomstring": "^1.1.5",
+    "sendgrid": "^5.2.3",
     "socket.io": "^2.2.0"
   }
 }
