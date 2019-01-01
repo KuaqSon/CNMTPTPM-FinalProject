@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Grid, Menu, Segment } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { Icon } from 'semantic-ui-react';
 import './SideMenu.css';
 
@@ -35,6 +35,16 @@ class SideMenu extends Component {
     this.state = {
       activeMenu: 'dashboard'
     };
+  }
+
+  componentDidMount() {
+    const { pathname } = this.props.location;
+    const path = pathname.substr(pathname.lastIndexOf('/') + 1);
+    if(path) {
+      this.setState({
+        activeMenu: path
+      })
+    }
   }
 
   render() {
@@ -110,5 +120,5 @@ class SideMenu extends Component {
   }
 }
 
-export default SideMenu;
+export default withRouter(SideMenu);
 
