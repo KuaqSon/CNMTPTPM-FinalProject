@@ -48,8 +48,9 @@ class SideMenu extends Component {
   }
 
   render() {
-    const menus = [
+    const userMenus = [
       {
+        key: 'dashboard',
         name: 'dashboard',
         icon: 'inbox',
         link: '/dashboard'
@@ -70,17 +71,55 @@ class SideMenu extends Component {
       //   name: 'calendar',
       //   icon: 'calendar check',
       // },
+      // {
+      //   key: 'layout',
+      //   name: 'layout',
+      //   icon: 'grid layout',
+      //   link: '/dashboard'
+      // },
       {
-        name: 'layout',
-        icon: 'grid layout',
+        key: 'payments',
+        name: 'List Payment',
+        icon: 'payment',
         link: '/dashboard'
       },
       {
+        key: 'recipient',
+        name: 'Recipients',
+        icon: 'address book outline',
+        link: '/dashboard'
+      },
+      {
+        key: 'history',
+        name: 'History',
+        icon: 'history',
+        link: '/dashboard'
+      },
+      {
+        key: 'transactions',
         name: 'transactions',
         icon: 'bar chart',
         link: '/dashboard/transactions'
       }
     ];
+
+    const employeeMenus = [
+      {
+        key: 'clients',
+        name: 'Clients',
+        icon: 'users',
+        link: '/dashboard'
+      },
+      {
+        key: 'recharge',
+        name: 'Recharge',
+        icon: 'usd',
+        link: '/dashboard'
+      },
+    ];
+
+    const USER = true;
+    const menus = USER ? userMenus : employeeMenus;
 
     return (
       <Segment>
@@ -88,15 +127,15 @@ class SideMenu extends Component {
           {menus.map(item => {
             if (item.submenus) {
               return (
-                <div key={item.name}
-                  className={this.state.activeMenu === item.name ? 'menu active' : 'menu' }
-                  onClick={() => this.setState({ activeMenu: item.name })}>
+                <div key={item.key}
+                  className={this.state.activeMenu === item.key ? 'menu active' : 'menu' }
+                  onClick={() => this.setState({ activeMenu: item.key })}>
                     <Icon name={item.icon} size="large"/>
                     <span>{item.name}</span>
-                    <Icon name={this.state.activeMenu === item.name ? "angle up" : "angle down" }/>
+                    <Icon name={this.state.activeMenu === item.key ? "angle up" : "angle down" }/>
                   <div className="">
                     <div className={ 'sub-menu-container ' +
-                        (this.state.activeMenu === item.name ? 'active' : '') } >
+                        (this.state.activeMenu === item.key ? 'active' : '') } >
                       <SubMenu submenu={item.submenus} menu={item} />
                     </div>
                   </div>
@@ -104,9 +143,9 @@ class SideMenu extends Component {
               )
             } else {
               return (
-                <Link to={item.link} name={item.name} key={item.name}
-                  className={this.state.activeMenu === item.name ? 'menu active' : 'menu' }
-                  onClick={() => this.setState({ activeMenu: item.name })}
+                <Link to={item.link} name={item.name} key={item.key}
+                  className={this.state.activeMenu === item.key ? 'menu active' : 'menu' }
+                  onClick={() => this.setState({ activeMenu: item.key })}
                   >
                   <Icon name={item.icon} size="large"/>
                   <span>{item.name}</span>
