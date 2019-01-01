@@ -1,29 +1,114 @@
-import React, { Component } from 'react'
-import { Grid, Menu, Segment } from 'semantic-ui-react'
+import React, { Component } from 'react';
+import { Grid, Menu, Segment } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
+import { Icon } from 'semantic-ui-react';
+import './SideMenu.css';
 
-export default class SideMenu extends Component {
-  state = { activeItem: 'bio' }
-
-  handleItemClick = (e, { name }) => this.setState({ activeItem: name })
-
+class SubMenu extends Component {
   render() {
-    const { activeItem } = this.state
+    let subMenu = this.props.submenu;
 
-    return (
-      <Menu fluid vertical tabular>
-        <Menu.Item name='bio' active={activeItem === 'bio'} onClick={this.handleItemClick} />
-        <Menu.Item name='pics' active={activeItem === 'pics'} onClick={this.handleItemClick} />
-        <Menu.Item
-          name='companies'
-          active={activeItem === 'companies'}
-          onClick={this.handleItemClick}
-        />
-        <Menu.Item
-          name='links'
-          active={activeItem === 'links'}
-          onClick={this.handleItemClick}
-        />
-      </Menu>
-    )
+    if (subMenu !== null) {
+      return (
+        <div>
+          {subMenu.map(submenu => {
+            return (
+              <div key={submenu.name} className="sub-menu">
+                <Link to={submenu.link}>
+                  <Icon name="plus" size="small"/>
+                  <span>{submenu.name}</span>
+                </Link>
+              </div>
+            );
+          })}
+        </div>
+      );
+    } else {
+      return <div></div>
+    }
   }
 }
+
+class SideMenu extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeMenu: 'dashboard'
+    };
+  }
+
+  render() {
+    const menus = [
+      {
+        name: 'dashboard',
+        icon: 'inbox',
+        link: '/dashboard'
+      },
+      // {
+      //   name: 'form',
+      //   icon: 'checkmark box',
+      //   submenus: [
+      //     { name: 'input' },
+      //     { name: 'range-picker' }
+      //   ]
+      // },
+      // {
+      //   name: 'dropdown',
+      //   icon: 'sitemap',
+      // },
+      // {
+      //   name: 'calendar',
+      //   icon: 'calendar check',
+      // },
+      {
+        name: 'layout',
+        icon: 'grid layout',
+        link: '/dashboard'
+      },
+      {
+        name: 'transactions',
+        icon: 'bar chart',
+        link: '/dashboard/transactions'
+      }
+    ];
+
+    return (
+      <div>
+        <div className="left-menus">
+          {menus.map(item => {
+            if (item.submenus) {
+              return (
+                <div key={item.name}
+                  className={this.state.activeMenu === item.name ? 'menu active' : 'menu' }
+                  onClick={() => this.setState({ activeMenu: item.name })}>
+                    <Icon name={item.icon} size="large"/>
+                    <span>{item.name}</span>
+                    <Icon name={this.state.activeMenu === item.name ? "angle up" : "angle down" }/>
+                  <div className="">
+                    <div className={ 'sub-menu-container ' +
+                        (this.state.activeMenu === item.name ? 'active' : '') } >
+                      <SubMenu submenu={item.submenus} menu={item} />
+                    </div>
+                  </div>
+                </div>
+              )
+            } else {
+              return (
+                <Link to={item.link} name={item.name} key={item.name}
+                  className={this.state.activeMenu === item.name ? 'menu active' : 'menu' }
+                  onClick={() => this.setState({ activeMenu: item.name })}
+                  >
+                  <Icon name={item.icon} size="large"/>
+                  <span>{item.name}</span>
+                </Link>
+              )
+            }
+          })}
+        </div>
+      </div>
+    );
+  }
+}
+
+export default SideMenu;
+
