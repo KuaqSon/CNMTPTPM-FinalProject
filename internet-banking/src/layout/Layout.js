@@ -9,7 +9,7 @@ class Layout extends Component {
     return (
       <div className="grid">
         <TopMenu />
-        <Grid>
+        <Grid className="p-1">
           <Grid.Column width={4}>
             <SideMenu />
           </Grid.Column>

@@ -73,7 +73,7 @@ class SideMenu extends Component {
     ];
 
     return (
-      <div>
+      <Segment>
         <div className="left-menus">
           {menus.map(item => {
             if (item.submenus) {
@@ -105,7 +105,7 @@ class SideMenu extends Component {
             }
           })}
         </div>
-      </div>
+      </Segment>
     );
   }
 }
