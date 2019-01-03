@@ -122,7 +122,7 @@ class SideMenu extends Component {
     const menus = USER ? userMenus : employeeMenus;
 
     return (
-      <Segment>
+      <Segment stacked compact>
         <div className="left-menus">
           {menus.map(item => {
             if (item.submenus) {
