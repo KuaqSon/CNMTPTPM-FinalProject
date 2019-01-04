@@ -87,7 +87,7 @@ class SideMenu extends Component {
         key: 'recipient',
         name: 'Recipients',
         icon: 'address book outline',
-        link: '/dashboard'
+        link: '/dashboard/recipients'
       },
       {
         key: 'history',

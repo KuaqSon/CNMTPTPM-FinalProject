@@ -9,6 +9,7 @@ import Layout from './layout/Layout';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import Payments from './pages/Payments/Payments';
+import Recipients from './pages/Recipients/Recipients';
 
 class App extends Component {
   render() {
@@ -21,6 +22,7 @@ class App extends Component {
             <Route exact path="/dashboard" component={Dashboard} />
             <Route exact path="/dashboard/transactions" component={Transactions} />
             <Route exact path="/dashboard/payments" component={Payments} />
+            <Route exact path="/dashboard/recipients" component={Recipients} />
           </Layout>
         </Switch>
       </Router>

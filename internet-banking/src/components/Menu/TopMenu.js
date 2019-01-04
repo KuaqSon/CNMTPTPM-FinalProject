@@ -16,7 +16,7 @@ class TopMenu extends Component {
           Doubble Son
         </Menu.Item>
 
-        <Menu.Item
+        {/* <Menu.Item
           name='features'
           active={activeItem === 'features'}
           onClick={this.handleItemClick}
@@ -30,7 +30,7 @@ class TopMenu extends Component {
           onClick={this.handleItemClick}
         >
           Testimonials
-        </Menu.Item>
+        </Menu.Item> */}
 
         {/* <Menu.Item name='sign-in' active={activeItem === 'sign-in'} onClick={this.handleItemClick}>
           Sign-in
