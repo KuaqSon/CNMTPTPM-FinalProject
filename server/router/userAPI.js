@@ -2,47 +2,16 @@ var express = require('express');
 var User = require('../model/user');
 var router = express.Router();
 var bcrypt = require('bcrypt');
-var passport = require('passport');
 var authToken = require('../config/token');
 const rfToken = require('../model/refreshToken');
 const moment = require('moment');
 const Transaction = require('../model/transaction');
 const Account = require('../model/account');
-var random = require('randomstring');
+// var random = require('randomstring');
 const OTP = require('../config/authOTP').generateGmailOTP;
 
 
 
-
-// var sendgrid = require('sendgrid')('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');
-// sendgrid.setApiKey('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');
-
-
-// const sgMail = require('@sendgrid/mail');
-// sgMail.setApiKey('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');
-
-
-// router.get('/gmail', function (req, res) {
-//     const OTP = random.generate(7);
-//     const msg = {
-//         to: 'nhattien11.nth@gmail.com',
-//         from: 'duongttson@gmail.com',
-//         subject: 'Bố mày đây',
-//         text: 'Ù ú quá mập địt địt!',
-//         html: '<strong>Mã bảo mật của bạn là '+ OTP + '</strong>',
-//       };
-//       sgMail.send(msg, function(err){
-//           if(err){
-//               return res.json({
-//                   err:err
-//               });
-//           } else{
-//               return res.json({
-//                   msg: msg
-//               })
-//           }
-//       });
-// });
 
 var nodemailer = require('nodemailer');
 

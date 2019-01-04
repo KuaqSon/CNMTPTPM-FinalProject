@@ -1,16 +1,5 @@
 
-// const sgMail = require('@sendgrid/mail');
-// sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-// const msg = {
-//     to: 'nhattien11.nth@gmail.com',
-//     from: 'sonduongtranthai@gmail.com',
-//     subject: 'Just test sending a mail',
-//     text:'Hey! you are so cute!',
-//     html:'<strong>Hey! you are so cute!</strong>'
-// };
-
-// sgMail.send(msg);
-const emailSend = 'duongttson@gmail.com';
+// const emailSend = 'duongttson@gmail.com';
 const randomString = require('randomstring');
 const User = require('../model/user');
 var nodemailer = require('nodemailer');
@@ -33,7 +22,7 @@ exports.generateGmailOTP = (req, res, next) => {
                     service: 'gmail',
                     auth: {
                       user: 'duongttson@gmail.com',
-                      pass: 'Biutoghe2003'
+                      pass: ''
                     }
                   });
             
