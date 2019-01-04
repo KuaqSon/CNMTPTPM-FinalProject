@@ -11,6 +11,7 @@ import Login from './pages/Login/Login';
 import Payments from './pages/Payments/Payments';
 import Recipients from './pages/Recipients/Recipients';
 import HistoryPage from './pages/History/History';
+import Clients from './pages/Clients/Clients';
 
 class App extends Component {
   render() {
@@ -25,6 +26,7 @@ class App extends Component {
             <Route exact path="/dashboard/payments" component={Payments} />
             <Route exact path="/dashboard/recipients" component={Recipients} />
             <Route exact path="/dashboard/history" component={HistoryPage} />
+            <Route exact path="/dashboard/clients" component={Clients} />
           </Layout>
         </Switch>
       </Router>

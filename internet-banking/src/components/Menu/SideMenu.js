@@ -108,17 +108,17 @@ class SideMenu extends Component {
         key: 'clients',
         name: 'Clients',
         icon: 'users',
-        link: '/dashboard'
+        link: '/dashboard/clients'
       },
-      {
-        key: 'recharge',
-        name: 'Recharge',
-        icon: 'usd',
-        link: '/dashboard'
-      },
+      // {
+      //   key: 'recharge',
+      //   name: 'Recharge',
+      //   icon: 'usd',
+      //   link: '/dashboard/recharge'
+      // },
     ];
 
-    const USER = true;
+    const USER = false;
     const menus = USER ? userMenus : employeeMenus;
 
     return (
