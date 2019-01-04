@@ -10,6 +10,7 @@ import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import Payments from './pages/Payments/Payments';
 import Recipients from './pages/Recipients/Recipients';
+import HistoryPage from './pages/History/History';
 
 class App extends Component {
   render() {
@@ -23,6 +24,7 @@ class App extends Component {
             <Route exact path="/dashboard/transactions" component={Transactions} />
             <Route exact path="/dashboard/payments" component={Payments} />
             <Route exact path="/dashboard/recipients" component={Recipients} />
+            <Route exact path="/dashboard/history" component={HistoryPage} />
           </Layout>
         </Switch>
       </Router>

@@ -93,7 +93,7 @@ class SideMenu extends Component {
         key: 'history',
         name: 'History',
         icon: 'history',
-        link: '/dashboard'
+        link: '/dashboard/history'
       },
       {
         key: 'transactions',
