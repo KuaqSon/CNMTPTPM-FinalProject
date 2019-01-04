@@ -1,7 +1,8 @@
 import React from 'react';
 import {
   Header,
-  Icon
+  Icon,
+  Step
 } from 'semantic-ui-react';
 import TransactionStep from '../../components/Transactions/TransactionStep';
 import SelectCard from '../../components/Transactions/SelectCard';
@@ -25,7 +26,7 @@ class Transactions extends React.Component {
           </Header>
         </div>
         <div style={{ marginTop: '2em', marginBottom: '1em' }}>
-          <TransactionStep />
+          <TransactionStep currentStep={2}/>
           <SelectCard />
           <RecipientInfo />
           <TransactionInfor />
