@@ -7,6 +7,7 @@ import TransactionStep from '../../components/Transactions/TransactionStep';
 import SelectCard from '../../components/Transactions/SelectCard';
 import RecipientInfo from '../../components/Transactions/RecipientInfo';
 import TransactionInfor from '../../components/Transactions/TransactionInfo';
+import TransactionConfirm from '../../components/Transactions/TransactionConfirm';
 
 class Transactions extends React.Component {
   render() {
@@ -27,6 +28,7 @@ class Transactions extends React.Component {
           <SelectCard />
           <RecipientInfo />
           <TransactionInfor />
+          <TransactionConfirm />
         </div>
       </div>
     );
