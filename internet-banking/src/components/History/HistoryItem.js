@@ -9,16 +9,15 @@ class HistoryItem extends Component {
           <Statistic>
             <Statistic.Value text>
             <Icon name="clock outline"/>
-              22/12 <br />
-              2020
+              22/12/2020 <br />
+              15:00 PM
             </Statistic.Value>
             <Statistic.Label>Time</Statistic.Label>
           </Statistic>
 
           <Statistic>
             <Statistic.Value text>
-              1232132 <br />
-              1321321
+              12321321321321
             </Statistic.Value>
             <Statistic.Label>Payment card sent</Statistic.Label>
           </Statistic>
@@ -37,7 +36,7 @@ class HistoryItem extends Component {
           </Statistic>
 
           <Statistic>
-            <Statistic.Value>
+            <Statistic.Value text>
               <Icon name="user circle outline" />
               Tran A
             </Statistic.Value>
@@ -46,8 +45,7 @@ class HistoryItem extends Component {
 
           <Statistic>
             <Statistic.Value text>
-              1232132 <br />
-              6666666
+              12321326666666
             </Statistic.Value>
             <Statistic.Label>Recipient's payment</Statistic.Label>
           </Statistic>
