@@ -10,12 +10,12 @@
 // };
 
 // sgMail.send(msg);
-const emailSend = 'sonduongtranthai@gmail.com';
+const emailSend = 'duongttson@gmail.com';
 const randomString = require('randomstring');
 const User = require('../model/user');
-//
-var sendgrid = require('@sendgrid/mail')
-sendgrid.setApiKey('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');
+var nodemailer = require('nodemailer');
+
+
 
 exports.generateGmailOTP = (req, res, next) => {
     const idUser = req.body.idUser;
@@ -27,26 +27,31 @@ exports.generateGmailOTP = (req, res, next) => {
         } else {
             if (user) {
                 const OTP = randomString.generate(7);
-                const message = {
-                    to: 'nhattien11.nth@gmail.com',
-                    from: emailSend,
-                    subject: 'Xác nhận giao dịch',
-                    text: 'Mã xác nhận giao dịch của bạn',
-                    html: '<strong>Mã xác nhận giao dịch của bạn là của bạn là ' + OTP + '</strong>',
 
 
-                };
-                sendgrid.send(message, function (err, json) {
-                    if (err) return res.json({
-                        msg: err
-                    });
-
-                    else
-                        {
-                            next();
-                        }
-
-                })
+                var transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                      user: 'duongttson@gmail.com',
+                      pass: 'Biutoghe2003'
+                    }
+                  });
+            
+                  var mailOptions = {
+                    from: 'duongttson@gmail.com',
+                    to: 'sonduongtranthai@gmail.com',
+                    subject: 'Xác nhận giao dịch của bạn',
+                    text: 'Mã OTP giao dịch của bạn là: ' + OTP
+                  };
+            
+                  transporter.sendMail(mailOptions, function(error, info){
+                    if (error) {
+                      console.log(error);
+                    } else {
+                      console.log('Email sent: ' + info.response);
+                      next();
+                    }
+                  });
             }
         }
     })

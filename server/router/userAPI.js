@@ -8,23 +8,30 @@ const rfToken = require('../model/refreshToken');
 const moment = require('moment');
 const Transaction = require('../model/transaction');
 const Account = require('../model/account');
+var random = require('randomstring');
 const OTP = require('../config/authOTP').generateGmailOTP;
-//
-// var sendgrid = require('sendgrid')(process.env.SENDGRID_API_KEY)
-// var sendgrid = require('@sendgrid/mail')
-// //
-// sendgrid.setApiKey('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');
 
-// router.post('/gmail', function(req,res){
 
+
+
+// var sendgrid = require('sendgrid')('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');
+// sendgrid.setApiKey('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');
+
+
+// const sgMail = require('@sendgrid/mail');
+// sgMail.setApiKey('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');
+
+
+// router.get('/gmail', function (req, res) {
+//     const OTP = random.generate(7);
 //     const msg = {
 //         to: 'nhattien11.nth@gmail.com',
-//         from: 'sonduongtranthai@gmail.com',
-//         subject: 'Xác nhận giao dịch',
+//         from: 'duongttson@gmail.com',
+//         subject: 'Bố mày đây',
 //         text: 'Ù ú quá mập địt địt!',
-//         html: '<strong>Mã bảo mật của bạn là KOlk0T99</strong>',
+//         html: '<strong>Mã bảo mật của bạn là '+ OTP + '</strong>',
 //       };
-//       sendgrid.send(msg, function(err){
+//       sgMail.send(msg, function(err){
 //           if(err){
 //               return res.json({
 //                   err:err
@@ -35,20 +42,42 @@ const OTP = require('../config/authOTP').generateGmailOTP;
 //               })
 //           }
 //       });
-
-//     // sendgrid.send({
-//     //     to: 'nhattien11.nth@gmail.com',
-//     //     from: 'sonduongtranthai@gmail.com',
-//     //     subject: 'Ù ú mặp địt',
-//     //     text:'Ù ú quá mập địt địt!'
-//     // }, function(err, json){
-//     //     if(err){
-//     //         return console.log(err);
-
-//     //     }
-//     //     console.log(json);
-//     // })
 // });
+
+var nodemailer = require('nodemailer');
+
+router.get('/gmail', function (req, res) {
+
+    var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'duongttson@gmail.com',
+          pass: 'Biutoghe2003'
+        }
+      });
+
+      var mailOptions = {
+        from: 'duongttson@gmail.com',
+        to: 'sonduongtranthai@gmail.com',
+        subject: 'Sending Email using Node.js',
+        text: 'That was easy!'
+      };
+
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+          res.json({
+              msg: 'sended'
+          });
+        }
+      });
+
+
+});
+
+
 
 var auth = authToken.verifyAccessToken;
 
