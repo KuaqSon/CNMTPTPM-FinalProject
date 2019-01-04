@@ -8,6 +8,7 @@ import Transactions from './pages/Transactions/Transactions';
 import Layout from './layout/Layout';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
+import Payments from './pages/Payments/Payments';
 
 class App extends Component {
   render() {
@@ -19,6 +20,7 @@ class App extends Component {
           <Layout>
             <Route exact path="/dashboard" component={Dashboard} />
             <Route exact path="/dashboard/transactions" component={Transactions} />
+            <Route exact path="/dashboard/payments" component={Payments} />
           </Layout>
         </Switch>
       </Router>

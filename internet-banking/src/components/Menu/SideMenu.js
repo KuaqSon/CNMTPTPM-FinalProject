@@ -81,7 +81,7 @@ class SideMenu extends Component {
         key: 'payments',
         name: 'List Payment',
         icon: 'payment',
-        link: '/dashboard'
+        link: '/dashboard/payments'
       },
       {
         key: 'recipient',
