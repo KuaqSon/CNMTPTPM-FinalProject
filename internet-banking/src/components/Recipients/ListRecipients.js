@@ -4,7 +4,7 @@ import { Header, Image, Table } from 'semantic-ui-react'
 class ListRecipients extends Component {
   render() {
     return (
-      <Table basic='very' celled collapsing>
+      <Table celled collapsing selectable>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>No.</Table.HeaderCell>
