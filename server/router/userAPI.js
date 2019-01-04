@@ -20,28 +20,28 @@ router.get('/gmail', function (req, res) {
     var transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-          user: 'duongttson@gmail.com',
-          pass: 'Biutoghe2003'
+            user: 'duongttson@gmail.com',
+            pass: 'Biutoghe2003'
         }
-      });
+    });
 
-      var mailOptions = {
+    var mailOptions = {
         from: 'duongttson@gmail.com',
         to: 'sonduongtranthai@gmail.com',
         subject: 'Sending Email using Node.js',
         text: 'That was easy!'
-      };
+    };
 
-      transporter.sendMail(mailOptions, function(error, info){
+    transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
-          console.log(error);
+            console.log(error);
         } else {
-          console.log('Email sent: ' + info.response);
-          res.json({
-              msg: 'sended'
-          });
+            console.log('Email sent: ' + info.response);
+            res.json({
+                msg: 'sended'
+            });
         }
-      });
+    });
 
 
 });
@@ -56,6 +56,35 @@ router.get('/rftokens', function (req, res) {
             rftokens: rftokens
         })
     })
+})
+
+router.post('/activeAccount', function (req, res) {
+    var accountNumber = req.body.accountNumber;
+    var idUser = req.body.idUser;
+    var isActive = req.body.isActive;
+    Account.findOne({
+        idUser: idUser,
+        accountNumber: accountNumber
+    }, function (err, user) {
+        if (user) {
+            user.isActive = isActive;
+            user.save(function(err){
+                if(err){
+                    return res.json({
+                        msg: 'err save'
+                    });
+                }
+                return res.json({
+                    msg: 'done'
+                });
+            });
+        } else{
+            return res.json({
+                msg: 'user not found!'
+            });
+        }
+    })
+
 })
 
 router.post('/login', function (req, res) {
