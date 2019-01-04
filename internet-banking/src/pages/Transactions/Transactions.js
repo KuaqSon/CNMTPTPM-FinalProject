@@ -5,6 +5,7 @@ import {
 } from 'semantic-ui-react';
 import TransactionStep from '../../components/Transactions/TransactionStep';
 import SelectCard from '../../components/Transactions/SelectCard';
+import RecipientInfo from '../../components/Transactions/RecipientInfo';
 
 class Transactions extends React.Component {
   render() {
@@ -23,6 +24,7 @@ class Transactions extends React.Component {
         <div style={{ marginTop: '2em', marginBottom: '1em' }}>
           <TransactionStep />
           <SelectCard />
+          <RecipientInfo />
         </div>
       </div>
     );
