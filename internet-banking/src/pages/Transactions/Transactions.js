@@ -6,6 +6,7 @@ import {
 import TransactionStep from '../../components/Transactions/TransactionStep';
 import SelectCard from '../../components/Transactions/SelectCard';
 import RecipientInfo from '../../components/Transactions/RecipientInfo';
+import TransactionInfor from '../../components/Transactions/TransactionInfo';
 
 class Transactions extends React.Component {
   render() {
@@ -25,6 +26,7 @@ class Transactions extends React.Component {
           <TransactionStep />
           <SelectCard />
           <RecipientInfo />
+          <TransactionInfor />
         </div>
       </div>
     );
