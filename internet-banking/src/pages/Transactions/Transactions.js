@@ -8,6 +8,7 @@ import SelectCard from '../../components/Transactions/SelectCard';
 import RecipientInfo from '../../components/Transactions/RecipientInfo';
 import TransactionInfor from '../../components/Transactions/TransactionInfo';
 import TransactionConfirm from '../../components/Transactions/TransactionConfirm';
+import TransactionOTP from '../../components/Transactions/TransactionOTP';
 
 class Transactions extends React.Component {
   render() {
@@ -29,6 +30,7 @@ class Transactions extends React.Component {
           <RecipientInfo />
           <TransactionInfor />
           <TransactionConfirm />
+          <TransactionOTP />
         </div>
       </div>
     );
