@@ -38,7 +38,9 @@ router.get('/gmail', function (req, res) {
         } else {
             console.log('Email sent: ' + info.response);
             res.json({
-                msg: 'sended'
+                resp: 'success',
+                isError: false,
+                msg: null
             });
         }
     });
@@ -53,8 +55,10 @@ var auth = authToken.verifyAccessToken;
 router.get('/rftokens', function (req, res) {
     rfToken.find(function (err, rftokens) {
         res.json({
-            rftokens: rftokens
-        })
+            resp: rftokens,
+            isError: false,
+            msg: null
+        });
     })
 })
 
@@ -68,17 +72,21 @@ router.post('/activeAccount', function (req, res) {
     }, function (err, user) {
         if (user) {
             user.isActive = isActive;
-            user.save(function(err){
-                if(err){
+            user.save(function (err) {
+                if (err) {
                     return res.json({
-                        msg: 'err save'
+                        resp: null,
+                        isError: true,
+                        msg: 'erro save'
                     });
                 }
                 return res.json({
-                    msg: 'done'
+                    resp: user,
+                    isError: false,
+                    msg: null
                 });
             });
-        } else{
+        } else {
             return res.json({
                 msg: 'user not found!'
             });
@@ -96,42 +104,68 @@ router.post('/login', function (req, res) {
         if (err) {
             console.log(err);
             res.json({
-                msg: "err"
-            })
+                resp: null,
+                isError: true,
+                msg: null
+            });
             res.statusCode = 401;
             return;
         }
         if (user) {
             bcrypt.compare(password, user.password, function (err, isMatch) {
                 if (isMatch) {
+                    console.log(user);
+
                     var acceptToken = authToken.generateAccessToken(user);
                     var rfToken = authToken.generateRefreshToken();
                     authToken.updateRefreshToken(user._id, rfToken);
                     Account.find({ idUser: user._id }, function (err, accounts) {
                         if (accounts) {
-                            res.json({
+                            const dataUser = {
                                 auth: true,
                                 user: user,
                                 acceptToken: acceptToken,
                                 accounts: accounts,
                                 rfToken: rfToken
-                            })
-                        } else {
+                            };
+
                             res.json({
+                                resp: dataUser,
+                                isError: false,
+                                msg: null
+                            });
+
+                        } else {
+
+                            const dataUser = {
                                 auth: true,
                                 user: user,
                                 acceptToken: acceptToken,
                                 accounts: '',
                                 rfToken: rfToken
-                            })
+                            };
+                            res.json({
+                                resp: dataUser,
+                                isError: false,
+                                msg: null
+                            });
                         }
                     })
 
+                } else {
+                    res.json({
+                        resp: null,
+                        isError: false,
+                        msg: 'wrong password'
+                    });
                 }
             })
         } else {
+
             res.json({
-                msg: "User not exits"
+                resp: null,
+                isError: false,
+                msg: 'user not found'
             });
             return;
         }
@@ -145,13 +179,17 @@ router.post('/logout', function (req, res) {
         if (err) {
             console.log(err);
             res.json({
-                msg: "did not success logout"
-            })
+                resp: null,
+                isError: true,
+                msg: null
+            });
         }
         else {
             res.json({
-                msg: "logout success!"
-            })
+                resp: null,
+                isError: false,
+                msg: 'success'
+            });
         }
     })
 });
@@ -163,8 +201,9 @@ router.post('/updateToken', function (req, res) {
     rfToken.findOne({ idUser: idUser }, function (err, user) {
         if (err) {
             res.json({
-                auth: false,
-                msg: err
+                resp: { auth: false },
+                isError: false,
+                msg: null
             });
             return;
         } else {
@@ -174,35 +213,47 @@ router.post('/updateToken', function (req, res) {
                     User.findById(idUser, function (err, user) {
                         if (err) {
                             res.json({
-                                auth: false,
-                                msg: err
+                                resp: { auth: false },
+                                isError: false,
+                                msg: null
                             });
                             return;
                         } else {
                             var acToken = authToken.generateAccessToken(user);
+
                             res.json({
-                                auth: true,
-                                user: user,
-                                acceptToken: acToken
-                            })
+                                resp: {
+                                    auth: true,
+                                    user: user,
+                                    acceptToken: acToken
+                                },
+                                isError: false,
+                                msg: null
+                            });
                         }
                     })
                 } else {
                     rfToken.findOneAndDelete({ idUser: idUser }, function (err) {
                         if (err) {
                             console.log(err);
-                            res.json({
-                                msg: "did not success logout"
-                            })
+                            return res.json({
+                                resp: { auth: false },
+                                isError: true,
+                                msg: 'err delete rfToken'
+                            });
                         }
                         else {
-                            res.json({
-                                msg: "logout success!"
-                            })
+                            return res.json({
+                                resp: { auth: false },
+                                isError: false,
+                                msg: 'success logout'
+                            });
                         }
                     })
                     res.json({
-                        auth: false,
+                        resp: { auth: false },
+                        isError: false,
+                        msg: 'success logout'
                     });
                 }
             }
@@ -235,15 +286,18 @@ router.post('/add-transaction', OTP, function (req, res) {
             if (err) {
                 console.log(err);
                 res.json({
-                    msg: err
+                    resp: null,
+                    isError: true,
+                    msg: null
                 });
             } else {
                 if (account) {
                     if (account.asset < Number(transferMoney)) {
                         res.json({
-                            msg: "not enough money"
-
-                        })
+                            resp: null,
+                            isError: false,
+                            msg: 'not enought money'
+                        });
                     } else {
                         // Verify Receiver 
                         Account.findOne({
@@ -256,7 +310,9 @@ router.post('/add-transaction', OTP, function (req, res) {
                                     if (err) {
                                         console.log(err);
                                         res.json({
-                                            msg: err
+                                            resp: null,
+                                            isError: true,
+                                            msg: null
                                         });
                                         return;
                                     } else {
@@ -265,7 +321,9 @@ router.post('/add-transaction', OTP, function (req, res) {
                                             if (err) {
                                                 console.log(err);
                                                 res.json({
-                                                    msg: err
+                                                    resp: null,
+                                                    isError: true,
+                                                    msg: null
                                                 });
                                                 return;
                                             }
@@ -283,7 +341,9 @@ router.post('/add-transaction', OTP, function (req, res) {
                                     if (err) {
                                         console.log(err);
                                         res.json({
-                                            msg: err
+                                            resp: null,
+                                            isError: true,
+                                            msg: null
                                         });
                                         return;
                                     };
@@ -301,13 +361,17 @@ router.post('/add-transaction', OTP, function (req, res) {
                                     if (err) {
                                         console.log(err)
                                         res.json({
-                                            msg: err
+                                            resp: null,
+                                            isError: true,
+                                            msg: null
                                         });
                                         return;
                                     } else {
                                         res.json({
-                                            msg: "Success transfer money!"
-                                        })
+                                            resp: { transaction: transaction },
+                                            isError: false,
+                                            msg: null
+                                        });
                                         return;
                                     }
                                 })
@@ -316,7 +380,9 @@ router.post('/add-transaction', OTP, function (req, res) {
 
                             } else {
                                 res.json({
-                                    msg: "No account found!"
+                                    resp: null,
+                                    isError: false,
+                                    msg: 'No account found'
                                 });
                                 return;
                             }
@@ -344,7 +410,9 @@ router.post('/add-transaction', OTP, function (req, res) {
                 if (err) {
                     console.log(err);
                     res.json({
-                        msg: err
+                        resp: null,
+                        isError: true,
+                        msg: null
                     });
                 } else {
                     if (account) {
@@ -354,7 +422,9 @@ router.post('/add-transaction', OTP, function (req, res) {
                             if (err) {
                                 console.log(err);
                                 res.json({
-                                    msg: err
+                                    resp: null,
+                                    isError: true,
+                                    msg: null
                                 });
                             } else {
 
@@ -370,11 +440,15 @@ router.post('/add-transaction', OTP, function (req, res) {
                                     if (err) {
                                         console.log(err)
                                         res.json({
-                                            msg: err
+                                            resp: null,
+                                            isError: true,
+                                            msg: null
                                         });
                                     } else {
                                         res.json({
-                                            msg: "success"
+                                            resp: { transaction: transaction },
+                                            isError: false,
+                                            msg: null
                                         });
                                     }
                                 })
@@ -385,7 +459,9 @@ router.post('/add-transaction', OTP, function (req, res) {
                     } else {
                         console.log("user is not exited!");
                         res.json({
-                            msg: "user is not exited!"
+                            resp: null,
+                            isError: false,
+                            msg: 'user is not exited!'
                         });
                     }
 
@@ -408,12 +484,19 @@ router.post('/get-account', auth, function (req, res) {
     }, function (err, accounts) {
         if (err) {
             res.json({
-                msg: "Erro"
+                resp: null,
+                isError: true,
+                msg: null
             });
             return;
         } else {
             res.json({
                 account: accounts
+            });
+            res.json({
+                resp: { account: accounts },
+                isError: false,
+                msg: null
             });
         }
     })
@@ -429,12 +512,17 @@ router.post('/history', auth, function (req, res) {
             console.log(err);
             res.statusCode = 400;
             res.json({
-                msg: "Can't get history of transaction!"
+                resp: null,
+                isError: true,
+                msg: null
             });
         } else {
+
             res.json({
-                transactions: transactions,
-            })
+                resp: { transactions: transactions },
+                isError: false,
+                msg: null
+            });
         }
     })
 });
@@ -449,12 +537,16 @@ router.post('/history-all', auth, function (req, res) {
             console.log(err);
             res.statusCode = 400;
             res.json({
-                msg: "Can't get history of transaction!"
+                resp: null,
+                isError: true,
+                msg: null
             });
         } else {
             res.json({
-                transactions: transactions,
-            })
+                resp: { transactions: transactions },
+                isError: false,
+                msg: null
+            });
         }
     })
 });
@@ -467,7 +559,9 @@ router.post('/find-account', auth, function (req, res) {
     Account.findOne({ accountNumber: accountNumber }, function (err, account) {
         if (err) {
             res.json({
-                msg: err
+                resp: null,
+                isError: true,
+                msg: null
             });
             return;
         } else {
@@ -475,19 +569,27 @@ router.post('/find-account', auth, function (req, res) {
                 User.findById(account.idUser, function (err, user) {
                     if (err) {
                         res.json({
-                            msg: err
+                            resp: null,
+                            isError: true,
+                            msg: null
                         });
                         return;
                     } else {
                         if (user) {
                             res.json({
-                                name: user.name,
-                                accountNumber: accountNumber
+                                resp: {
+                                    name: user.name,
+                                    accountNumber: accountNumber
+                                },
+                                isError: false,
+                                msg: null
                             });
                             return;
                         } else {
                             res.json({
-                                msg: "User not found!"
+                                resp: null,
+                                isError: true,
+                                msg: 'User not found'
                             });
                             return;
                         }

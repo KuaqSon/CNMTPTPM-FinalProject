@@ -26,8 +26,6 @@ app.use(bodyParser.json());
 
 
 var User = require('./router/userAPI');
-var Transaction = require('./router/controlTransaction');
-var Activity = require('./router/userAPI'); 
 var Employee = require('./router/employeeAPI');
 
 
