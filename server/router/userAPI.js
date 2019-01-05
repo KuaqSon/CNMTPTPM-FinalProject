@@ -502,9 +502,9 @@ router.post('/get-account', auth, function (req, res) {
     })
 })
 
-router.post('/history', auth, function (req, res) {
+router.post('/history', function (req, res) {
     const accountNumber = req.body.accountNumber;
-    // console.log(idUser);
+    console.log(JSON.stringify(req.body));
     Transaction.find({
         accountNumber: accountNumber
     }, function (err, transactions) {
