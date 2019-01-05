@@ -15,7 +15,7 @@ var AccountSchema = mongoose.Schema({
         type: Number,
         default: 0
     },
-    isAcive: {
+    isActive: {
         type: Boolean,
         default: true
     },

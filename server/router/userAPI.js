@@ -162,7 +162,8 @@ router.post('/add-transaction', auth, function (req, res) {
         // Transfer transaction: 
         // sub money of User
         Account.findOne({
-            accountNumber: accountNumber
+            accountNumber: accountNumber,
+            isActive: true
         }, function (err, account) {
             if (err) {
                 console.log(err);
@@ -179,7 +180,9 @@ router.post('/add-transaction', auth, function (req, res) {
                     } else {
                         // Verify Receiver 
                         Account.findOne({
-                            accountNumber: transferTo
+                            accountNumber: transferTo,
+                            isActive: true
+
                         }).then(tranfer => {
                             if (tranfer) {
                                 Account.findOne({ accountNumber: accountNumber }).exec((err, user) => {
@@ -268,7 +271,8 @@ router.post('/add-transaction', auth, function (req, res) {
 
             // Create Transaction 
             Account.findOne({
-                accountNumber: accountNumber
+                accountNumber: accountNumber,
+                isActive: true
             }, function (err, account) {
                 if (err) {
                     console.log(err);

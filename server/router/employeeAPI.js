@@ -22,6 +22,23 @@ router.get('/accounts', function (req, res) {
     })
 })
 
+router.post('/accounts', function (req, res) {
+    var idUser = req.idUser;
+    Account.find({ idUser: idUser }, function (err, accounts) {
+        if (err) {
+            return res.json({
+                msg: 'err'
+            });
+
+        }
+        if (accounts) return res.json({
+            accounts: accounts
+        });
+        else return res.json({
+            accounts: null
+        });
+    })
+})
 
 router.post('/add-user', function (req, res) {
     var name = req.body.name;
@@ -127,11 +144,13 @@ router.post('/add-account', function (req, res) {
                                 });
                                 return;
                             } else {
-                                res.json({
-                                    account: account
-                                });
                                 user.numberOfAccount++;
                                 user.save();
+                                Account.find({ idUser: idUser }, function (err, accounts) {
+                                    res.json({
+                                        accounts: accounts
+                                    });
+                                })
                                 return;
                             }
                         });
