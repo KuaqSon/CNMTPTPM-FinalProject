@@ -2,12 +2,51 @@ var express = require('express');
 var User = require('../model/user');
 var router = express.Router();
 var bcrypt = require('bcrypt');
-var passport = require('passport');
 var authToken = require('../config/token');
 const rfToken = require('../model/refreshToken');
 const moment = require('moment');
 const Transaction = require('../model/transaction');
 const Account = require('../model/account');
+// var random = require('randomstring');
+const OTP = require('../config/authOTP').generateGmailOTP;
+
+
+
+
+var nodemailer = require('nodemailer');
+
+router.get('/gmail', function (req, res) {
+
+    var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.Email,
+            pass: process.env.PassGmail
+        }
+    });
+
+    var mailOptions = {
+        from: 'duongttson@gmail.com',
+        to: 'sonduongtranthai@gmail.com',
+        subject: 'Sending Email using Node.js',
+        text: 'That was easy!'
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+            res.json({
+                msg: 'sended'
+            });
+        }
+    });
+
+
+});
+
+
 
 var auth = authToken.verifyAccessToken;
 
@@ -17,6 +56,35 @@ router.get('/rftokens', function (req, res) {
             rftokens: rftokens
         })
     })
+})
+
+router.post('/activeAccount', function (req, res) {
+    var accountNumber = req.body.accountNumber;
+    var idUser = req.body.idUser;
+    var isActive = req.body.isActive;
+    Account.findOne({
+        idUser: idUser,
+        accountNumber: accountNumber
+    }, function (err, user) {
+        if (user) {
+            user.isActive = isActive;
+            user.save(function(err){
+                if(err){
+                    return res.json({
+                        msg: 'err save'
+                    });
+                }
+                return res.json({
+                    msg: 'done'
+                });
+            });
+        } else{
+            return res.json({
+                msg: 'user not found!'
+            });
+        }
+    })
+
 })
 
 router.post('/login', function (req, res) {
@@ -144,8 +212,7 @@ router.post('/updateToken', function (req, res) {
 });
 
 
-
-router.post('/add-transaction', auth, function (req, res) {
+router.post('/add-transaction', OTP, function (req, res) {
     var accountNumber = req.body.accountNumber;
     var transferTo = req.body.transferTo;
     var transferMoney = req.body.transferMoney;

@@ -7,7 +7,6 @@ var mongoose = require('mongoose');
 var configDb = require('./config/database');
 
 
-
 mongoose.connect(configDb.database);
 
 var db = mongoose.connection;
