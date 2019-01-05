@@ -102,8 +102,10 @@ router.post('/add-user', function (req, res) {
 router.get('/user', function (req, res) {
     User.find({}, function (err, users) {
         res.json({
-            msg: users
-        })
+            resp: users,
+            isError: false,
+            msg: null
+        });
     })
 });
 router.post('/add-account', function (req, res) {
