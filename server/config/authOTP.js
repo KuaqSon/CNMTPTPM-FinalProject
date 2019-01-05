@@ -20,8 +20,8 @@ exports.generateGmailOTP = (req, res, next) => {
                 var transporter = nodemailer.createTransport({
                     service: 'gmail',
                     auth: {
-                        user: 'duongttson@gmail.com',
-                        pass: 'Biutoghe2003'
+                        user: process.env.Email,
+                        pass: process.env.PassGmail
                     }
                 });
                 var mailOptions = {
@@ -60,7 +60,7 @@ exports.verifyAccessOTP = (req, res, next) => {
     }, function (err, user) {
         if (err) return res.json({ msg: 'err' })
         if (user) {
-            
+
             next()
         } else return res.json({ msg: 'wrong OTP' })
     })

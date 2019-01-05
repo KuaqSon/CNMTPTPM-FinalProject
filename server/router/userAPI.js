@@ -20,8 +20,8 @@ router.get('/gmail', function (req, res) {
     var transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'duongttson@gmail.com',
-            pass: 'Biutoghe2003'
+            user: process.env.Email,
+            pass: process.env.PassGmail
         }
     });
 
@@ -210,7 +210,6 @@ router.post('/updateToken', function (req, res) {
     })
 
 });
-
 
 
 router.post('/add-transaction', OTP, function (req, res) {
