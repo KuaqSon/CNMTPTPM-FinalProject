@@ -2,10 +2,16 @@ import React, { Component } from 'react';
 import ClientsList from '../../components/Clients/ClientsList';
 import {
   Header,
-  Icon
+  Icon,
+  Segment,
+  Button
 } from 'semantic-ui-react';
+import { withRouter} from 'react-router-dom';
 
-class Recipients extends Component {
+class Clients extends Component {
+  gotoNewClient =() => {
+    this.props.history.push("/dashboard/clients/new");
+  }
   render() {
 
     return (
@@ -20,6 +26,16 @@ class Recipients extends Component {
           </Header>
         </div>
         <div style={{ marginTop: '2em', marginBottom: '1em' }}>
+          <div>
+            <Segment>
+              <Button animated='fade' onClick={() => this.gotoNewClient()}>
+                <Button.Content visible>New Client</Button.Content>
+                <Button.Content hidden>
+                <Icon name='add' />
+                </Button.Content>
+              </Button>
+            </Segment>
+          </div>
           <ClientsList />
         </div>
       </div>
@@ -27,4 +43,4 @@ class Recipients extends Component {
   }
 }
 
-export default Recipients;
+export default withRouter(Clients);
