@@ -16,7 +16,11 @@ exports.generateGmailOTP = (req, res, next) => {
             })
         } else {
             if (user) {
-                const OTP = randomString.generate(7);
+                const OTP = randomString.generate({
+                    length: 6,
+                    charset: '1234567890'
+                });
+
                 var transporter = nodemailer.createTransport({
                     service: 'gmail',
                     auth: {
