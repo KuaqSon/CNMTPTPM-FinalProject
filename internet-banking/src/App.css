@@ -1,3 +1,7 @@
+body {
+  background: #f7f7f7 !important;
+}
+
 .App {
   text-align: center;
 }
@@ -29,4 +33,33 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+
+.mt-3 {
+  margin-top: 3em !important;
+}
+
+.mt-2 {
+  margin-top: 2em !important;
+}
+
+.mb-2 {
+  margin-bottom: 2em !important;
+}
+
+.p-1 {
+  padding: 1em !important;
+}
+
+.m-auto {
+  margin: 0 auto !important;
+}
+
+.w-400 {
+  max-width: 400px !important;
+}
+
+.w-600 {
+  max-width: 600px !important;
 }

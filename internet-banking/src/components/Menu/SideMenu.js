@@ -1,29 +1,163 @@
-import React, { Component } from 'react'
-import { Grid, Menu, Segment } from 'semantic-ui-react'
+import React, { Component } from 'react';
+import { Grid, Menu, Segment } from 'semantic-ui-react';
+import { Link, withRouter } from 'react-router-dom';
+import { Icon } from 'semantic-ui-react';
+import './SideMenu.css';
 
-export default class SideMenu extends Component {
-  state = { activeItem: 'bio' }
-
-  handleItemClick = (e, { name }) => this.setState({ activeItem: name })
-
+class SubMenu extends Component {
   render() {
-    const { activeItem } = this.state
+    let subMenu = this.props.submenu;
 
-    return (
-      <Menu fluid vertical tabular>
-        <Menu.Item name='bio' active={activeItem === 'bio'} onClick={this.handleItemClick} />
-        <Menu.Item name='pics' active={activeItem === 'pics'} onClick={this.handleItemClick} />
-        <Menu.Item
-          name='companies'
-          active={activeItem === 'companies'}
-          onClick={this.handleItemClick}
-        />
-        <Menu.Item
-          name='links'
-          active={activeItem === 'links'}
-          onClick={this.handleItemClick}
-        />
-      </Menu>
-    )
+    if (subMenu !== null) {
+      return (
+        <div>
+          {subMenu.map(submenu => {
+            return (
+              <div key={submenu.name} className="sub-menu">
+                <Link to={submenu.link}>
+                  <Icon name="plus" size="small"/>
+                  <span>{submenu.name}</span>
+                </Link>
+              </div>
+            );
+          })}
+        </div>
+      );
+    } else {
+      return <div></div>
+    }
   }
 }
+
+class SideMenu extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeMenu: 'dashboard'
+    };
+  }
+
+  componentDidMount() {
+    const { pathname } = this.props.location;
+    const path = pathname.substr(pathname.lastIndexOf('/') + 1);
+    if(path) {
+      this.setState({
+        activeMenu: path
+      })
+    }
+  }
+
+  render() {
+    const userMenus = [
+      {
+        key: 'dashboard',
+        name: 'dashboard',
+        icon: 'inbox',
+        link: '/dashboard'
+      },
+      // {
+      //   name: 'form',
+      //   icon: 'checkmark box',
+      //   submenus: [
+      //     { name: 'input' },
+      //     { name: 'range-picker' }
+      //   ]
+      // },
+      // {
+      //   name: 'dropdown',
+      //   icon: 'sitemap',
+      // },
+      // {
+      //   name: 'calendar',
+      //   icon: 'calendar check',
+      // },
+      // {
+      //   key: 'layout',
+      //   name: 'layout',
+      //   icon: 'grid layout',
+      //   link: '/dashboard'
+      // },
+      {
+        key: 'payments',
+        name: 'List Payment',
+        icon: 'payment',
+        link: '/dashboard/payments'
+      },
+      {
+        key: 'recipient',
+        name: 'Recipients',
+        icon: 'address book outline',
+        link: '/dashboard/recipients'
+      },
+      {
+        key: 'history',
+        name: 'History',
+        icon: 'history',
+        link: '/dashboard/history'
+      },
+      {
+        key: 'transactions',
+        name: 'transactions',
+        icon: 'bar chart',
+        link: '/dashboard/transactions'
+      }
+    ];
+
+    const employeeMenus = [
+      {
+        key: 'clients',
+        name: 'Clients',
+        icon: 'users',
+        link: '/dashboard/clients'
+      },
+      // {
+      //   key: 'recharge',
+      //   name: 'Recharge',
+      //   icon: 'usd',
+      //   link: '/dashboard/recharge'
+      // },
+    ];
+
+    const USER = false;
+    const menus = USER ? userMenus : employeeMenus;
+
+    return (
+      <Segment stacked compact>
+        <div className="left-menus">
+          {menus.map(item => {
+            if (item.submenus) {
+              return (
+                <div key={item.key}
+                  className={this.state.activeMenu === item.key ? 'menu active' : 'menu' }
+                  onClick={() => this.setState({ activeMenu: item.key })}>
+                    <Icon name={item.icon} size="large"/>
+                    <span>{item.name}</span>
+                    <Icon name={this.state.activeMenu === item.key ? "angle up" : "angle down" }/>
+                  <div className="">
+                    <div className={ 'sub-menu-container ' +
+                        (this.state.activeMenu === item.key ? 'active' : '') } >
+                      <SubMenu submenu={item.submenus} menu={item} />
+                    </div>
+                  </div>
+                </div>
+              )
+            } else {
+              return (
+                <Link to={item.link} name={item.name} key={item.key}
+                  className={this.state.activeMenu === item.key ? 'menu active' : 'menu' }
+                  onClick={() => this.setState({ activeMenu: item.key })}
+                  >
+                  <Icon name={item.icon} size="large"/>
+                  <span>{item.name}</span>
+                </Link>
+              )
+            }
+          })}
+        </div>
+      </Segment>
+    );
+  }
+}
+
+export default withRouter(SideMenu);
+

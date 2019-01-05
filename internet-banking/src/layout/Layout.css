@@ -1,0 +1,8 @@
+.dash-left {
+    width: auto !important;
+}
+
+.dash-right {
+    flex-grow: 1 !important;
+    min-width: 400px;
+}
