@@ -19,11 +19,16 @@ const steps = [
   },
   {
     key: 4,
+    title: "Payer",
+    desc: "Choose the payer of transaction fee"
+  },
+  {
+    key: 5,
     title: "Confirm",
     desc: "Choose the form of payment & confirm"
   },
   {
-    key: 5,
+    key: 6,
     title: "OTP",
     desc: "Fill OTP code to confirms the transaction"
   },

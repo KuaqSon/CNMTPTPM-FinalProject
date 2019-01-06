@@ -63,10 +63,7 @@ class SelectCard extends Component {
     })
   }
 
-  submitChoosePayment = (id) => {
-    if (id === '') {
-      return;
-    }
+  submitChoosePayment = (number) => {
     
     this.setState({
       // loading: true,
@@ -75,7 +72,7 @@ class SelectCard extends Component {
     })
 
     this.props.setSendCard({
-      cardId: id
+      cardNumber: number
     })
     
   }
@@ -112,7 +109,7 @@ class SelectCard extends Component {
             </Modal.Content>
             <Modal.Actions>
               <Button
-                onClick={() => this.submitChoosePayment(this.state.selectedId)}
+                onClick={() => this.submitChoosePayment(selectedNumber)}
                 negative
                 labelPosition='right'
                 icon='check'

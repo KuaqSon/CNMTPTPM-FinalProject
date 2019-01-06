@@ -9,6 +9,7 @@ import TransactionStep from '../../components/Transactions/TransactionStep';
 import SelectCard from '../../components/Transactions/SelectCard';
 import RecipientInfo from '../../components/Transactions/RecipientInfo';
 import TransactionInfor from '../../components/Transactions/TransactionInfo';
+import TransactionPayer from '../../components/Transactions/TransactionPayer';
 import TransactionConfirm from '../../components/Transactions/TransactionConfirm';
 import TransactionOTP from '../../components/Transactions/TransactionOTP';
 import { connect } from 'react-redux';
@@ -75,8 +76,10 @@ class Transactions extends React.Component {
           { currentStep === 3 &&
           <TransactionInfor />}
           { currentStep === 4 &&
-          <TransactionConfirm />}
+          <TransactionPayer />}
           { currentStep === 5 &&
+          <TransactionConfirm />}
+          { currentStep === 6 &&
           <TransactionOTP />}
         </div>
         <div className="mt-3">
@@ -87,7 +90,7 @@ class Transactions extends React.Component {
                 <Icon name='arrow left' />
                 </Button.Content>
               </Button>}
-              { currentStep < 5 && 
+              { currentStep < 6 && 
               <Button animated='fade' inverted color='violet' onClick={() => this.gotoNextStep()}>
                 <Button.Content visible>Next</Button.Content>
                 <Button.Content hidden>
