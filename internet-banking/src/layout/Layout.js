@@ -3,13 +3,18 @@ import SideMenu from '../components/Menu/SideMenu';
 import TopMenu from '../components/Menu/TopMenu';
 import { Grid, Segment } from 'semantic-ui-react'
 import './Layout.css';
+import { connect } from 'react-redux';
+import { userData } from '../actions/auth';
 
 class Layout extends Component {
 
   render() {
+    const { user } = this.props;
+    const {name} = user;
+    console.log(user);
     return (
       <div className="grid">
-        <TopMenu />
+        <TopMenu nameOfUser={name}/>
         <Grid className="p-1" divided>
           <Grid.Row>
             <Grid.Column className="dash-left">
@@ -29,5 +34,22 @@ class Layout extends Component {
   
 }
 
+const mapStateToProps = (state) => {
+  return {
+    user: state.auth.data,
+    authStatus: state.auth.status
+  }
+}
 
-export default Layout;
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+    
+//   }
+// }
+
+export default connect(
+  mapStateToProps,
+  // mapDispatchToProps
+)(Layout);
+
+// export default Layout;

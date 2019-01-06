@@ -1,51 +1,123 @@
 import React, { Component } from 'react';
-import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
+import { connect } from 'react-redux';
+import { login } from '../../actions/auth';
+import { Button, Form, Grid, Header, Dimmer, Message, Segment, Loader } from 'semantic-ui-react';
 
 class Login extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      loading: false,
+      error: false,
+      username: '',
+      password: ''
+    };
+  }
+
+  componentWillMount() {
+    // const {authSatus} = this.props;
+    // console.log(authSatus);
+  }
+
+  handleChange = (e, { name, value }) => this.setState({ [name]: value })
+
+  handleLogin = () => {
+    const { username, password } = this.state;
+    this.setState({
+      loading: true,
+      error: false
+    })
+
+    this.props.login({
+      username,
+      password
+    })
+      .then(data => {
+        this.setState({
+          loading: false
+        });
+        console.log(data);
+        this.props.history.push("/dashboard");
+      })
+      .catch(error => {
+        this.setState({
+          loading: false,
+          error: true,
+        })
+        console.log("fail")
+      });
+  }
+
   render() {
+    const { loading, error, username, password } = this.state;
+
+    if(loading) {
+      return (
+        <Dimmer active inverted page>
+          <Loader inverted content='Loading' />
+        </Dimmer>
+      )
+    } else {
     return (
       <div className='login-form mt-3'>
-        {/*
-      Heads up! The styles below are necessary for the correct render of this example.
-      You can do same with CSS, the main idea is that all the elements up to the `Grid`
-      below must have a height of 100%.
-        */}
-            {/* <style>{`
-          body > div,
-          body > div > div,
-          body > div > div > div.login-form {
-            height: 100%;
-          }
-        `}</style> */}
         <Grid textAlign='center' style={{ height: '100%' }} verticalAlign='middle'>
           <Grid.Column style={{ maxWidth: 450 }}>
             <Header as='h2' color='teal' textAlign='center'>
               Log-in to your account
         </Header>
             <Form size='large' className="mt-2">
-              <Segment stacked>
-                <Form.Input fluid icon='user' iconPosition='left' placeholder='E-mail address' />
+              <Segment stacked textAlign="left">
+                <Form.Input
+                  fluid
+                  icon='user'
+                  label='Username:'
+                  iconPosition='left'
+                  placeholder='Username'
+                  name='username'
+                  value={username}
+                  onChange={this.handleChange}
+                />
                 <Form.Input
                   fluid
                   icon='lock'
+                  label='Password:'
                   iconPosition='left'
                   placeholder='Password'
                   type='password'
+                  name='password'
+                  value={password}
+                  onChange={this.handleChange}
                 />
 
-                <Button color='teal' fluid size='large' onClick={() => this.props.history.push("/dashboard")}>
+                <Button color='teal' fluid size='large' onClick={() => this.handleLogin()}>
                   Login
-            </Button>
+                </Button>
               </Segment>
             </Form>
-            <Message>
-              New to us? <a href='#'>Sign Up</a>
-            </Message>
+            {error && <Message color='orange'>
+              Invalid username or password
+            </Message>}
           </Grid.Column>
         </Grid>
       </div>
-    )
+    )}
   }
 }
 
-export default Login;
+
+const mapStateToProps = (state) => {
+  return {
+    // authSatus: state.auth.status
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    login: data => dispatch(login(data))
+  }
+}
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Login);

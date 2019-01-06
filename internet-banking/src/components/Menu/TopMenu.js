@@ -35,9 +35,13 @@ class TopMenu extends Component {
         {/* <Menu.Item name='sign-in' active={activeItem === 'sign-in'} onClick={this.handleItemClick}>
           Sign-in
         </Menu.Item> */}
-        <Menu.Item position='right' name='Logout' active={activeItem === 'Logout'} onClick={() => this.props.history.push("/")}>
-          Logout
-        </Menu.Item>
+        <Menu.Menu position='right'>
+          <Menu.Item name={this.props.nameOfUser}>
+          </Menu.Item>
+          <Menu.Item name='Logout' active={activeItem === 'Logout'} onClick={() => this.props.history.push("/")}>
+            Logout
+          </Menu.Item>
+        </Menu.Menu>
       </Menu>
     )
   }
