@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Grid, Dimmer, Loader, Modal, Button, Input, Form } from 'semantic-ui-react';
 import PaymentCard from '../Payment/PaymentCard';
