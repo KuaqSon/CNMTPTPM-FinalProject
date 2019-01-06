@@ -12,7 +12,10 @@ class HistoryList extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchHistory('159263478');
+    const num = 159263478;
+    this.props.fetchHistory({
+      accountNumber: num,
+    });
 
   }
   render() {
@@ -41,7 +44,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchHistory: () => dispatch(fetchHistory())
+    fetchHistory: data => dispatch(fetchHistory(data))
   }
 }
 
