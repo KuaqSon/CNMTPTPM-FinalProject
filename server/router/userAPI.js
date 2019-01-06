@@ -617,7 +617,7 @@ router.post('/recivers', function (req, res) {
             });
         }
         return res.json({
-            resp: { receivers: receivers },
+            resp: receivers,
             isError: false,
             msg: null
         });
