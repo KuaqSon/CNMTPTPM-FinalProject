@@ -48,7 +48,7 @@ class TransactionStep extends Component {
       currentStep = 1;
     }
     return (
-      <Step.Group ordered size='tiny'>
+      <Step.Group ordered size='mini'>
         {steps.map(s => (
           <Step
             key={s.key}
@@ -58,8 +58,8 @@ class TransactionStep extends Component {
             onClick={() => this.onChangeStep(s.key, currentStep)}
           >
             <Step.Content>
-              <Step.Title>{s.title}...</Step.Title>
-              <Step.Description>{s.desc}</Step.Description>
+              <Step.Title>{s.title}</Step.Title>
+              {/* <Step.Description>{s.desc}</Step.Description> */}
             </Step.Content>
           </Step>
         ))}

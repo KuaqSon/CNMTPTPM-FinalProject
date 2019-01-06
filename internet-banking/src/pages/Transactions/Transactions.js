@@ -2,7 +2,8 @@ import React from 'react';
 import {
   Header,
   Icon,
-  Step
+  Step,
+  Button
 } from 'semantic-ui-react';
 import TransactionStep from '../../components/Transactions/TransactionStep';
 import SelectCard from '../../components/Transactions/SelectCard';
@@ -10,10 +11,47 @@ import RecipientInfo from '../../components/Transactions/RecipientInfo';
 import TransactionInfor from '../../components/Transactions/TransactionInfo';
 import TransactionConfirm from '../../components/Transactions/TransactionConfirm';
 import TransactionOTP from '../../components/Transactions/TransactionOTP';
+import { connect } from 'react-redux';
 
 class Transactions extends React.Component {
-  render() {
+  constructor() {
+    super();
 
+    this.state = {
+      currentStep: 1,
+      loading: false,
+      modalVisible: false,
+      modalSuccessVisible: false,
+      selectedClient: '',
+      selectedId: ''
+    };
+  }
+
+  gotoNextStep = () => {
+    const next = this.state.currentStep + 1;
+    if(next > 5) {
+      return;
+    }
+    this.setState({
+      currentStep: next
+    })
+  }
+
+  gotoPreStep = () => {
+    const pre = this.state.currentStep - 1;
+    if(pre < 1) {
+      return;
+    }
+    this.setState({
+      currentStep: pre
+    })
+  }
+
+  render() {
+    const { currentStep } = this.state;
+    const { sendCard } = this.props;
+
+    console.log(sendCard);
     return (
       <div>
         <div className="p-1">
@@ -26,16 +64,52 @@ class Transactions extends React.Component {
           </Header>
         </div>
         <div style={{ marginTop: '2em', marginBottom: '1em' }}>
-          <TransactionStep currentStep={2}/>
-          <SelectCard />
-          <RecipientInfo />
-          <TransactionInfor />
-          <TransactionConfirm />
-          <TransactionOTP />
+          <TransactionStep currentStep={currentStep}/>
+          { currentStep === 1 &&
+          <SelectCard />}
+          { currentStep === 2 &&
+          <RecipientInfo />}
+          { currentStep === 3 &&
+          <TransactionInfor />}
+          { currentStep === 4 &&
+          <TransactionConfirm />}
+          { currentStep === 5 &&
+          <TransactionOTP />}
         </div>
+        <div className="mt-3">
+              { currentStep > 1 && 
+              <Button animated='fade' inverted color='violet' onClick={() => this.gotoPreStep()}>
+                <Button.Content visible>Back</Button.Content>
+                <Button.Content hidden>
+                <Icon name='arrow left' />
+                </Button.Content>
+              </Button>}
+              { currentStep < 5 && 
+              <Button animated='fade' inverted color='violet' onClick={() => this.gotoNextStep()}>
+                <Button.Content visible>Next</Button.Content>
+                <Button.Content hidden>
+                <Icon name='arrow right' />
+                </Button.Content>
+              </Button>}
+            </div>
       </div>
     );
   }
 }
 
-export default Transactions;
+const mapStateToProps = (state) => {
+  return {
+    sendCard: state.transaction.sendCard,
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Transactions);
+
