@@ -64,7 +64,6 @@ exports.verifyAccessOTP = (req, res, next) => {
     }, function (err, user) {
         if (err) return res.json({ msg: 'err' })
         if (user) {
-
             next()
         } else return res.json({ msg: 'wrong OTP' })
     })

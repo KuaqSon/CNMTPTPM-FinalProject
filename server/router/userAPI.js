@@ -8,41 +8,59 @@ const moment = require('moment');
 const Transaction = require('../model/transaction');
 const Account = require('../model/account');
 // var random = require('randomstring');
-const OTP = require('../config/authOTP').generateGmailOTP;
+const OTP = require('../config/authOTP').verifyAccessOTP;
 const Receiver = require('../model/receiver')
 
 var nodemailer = require('nodemailer');
 
-router.get('/gmail', function (req, res) {
+router.post('/gmail', function (req, res) {
 
-    var transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.Email,
-            pass: process.env.PassGmail
-        }
-    });
-
-    var mailOptions = {
-        from: 'duongttson@gmail.com',
-        to: 'sonduongtranthai@gmail.com',
-        subject: 'Sending Email using Node.js',
-        text: 'That was easy!'
-    };
-
-    transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            console.log(error);
+    const idUser = req.body.idUser;
+    User.findOne({ _id: idUser }, function (err, user) {
+        if (err) {
+            return res.json({
+                msg: err
+            })
         } else {
-            console.log('Email sent: ' + info.response);
-            res.json({
-                resp: 'success',
-                isError: false,
-                msg: null
-            });
-        }
-    });
+            if (user) {
+                const OTP = randomString.generate({
+                    length: 6,
+                    charset: '1234567890'
+                });
 
+                var transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: process.env.Email,
+                        pass: process.env.PassGmail
+                    }
+                });
+                var mailOptions = {
+                    from: 'duongttson@gmail.com',
+
+                    to: user.email,
+                    subject: 'Xác nhận giao dịch của bạn',
+                    text: 'Mã OTP giao dịch của bạn là: ' + OTP
+                };
+                const authUser = new authOTP({
+                    idUser: idUser,
+                    accountNumber: req.body.accountNumber,
+                    OTP: OTP,
+                    created: moment().format()
+                })
+                authUser.save(function (err) {
+                    if (err) console.log(err);
+                })
+                transporter.sendMail(mailOptions, function (error, info) {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        console.log('Email sent: ' + info.response);
+                    }
+                });
+            }
+        }
+    })
 
 });
 
@@ -267,7 +285,7 @@ router.post('/updateToken', function (req, res) {
 });
 
 
-router.post('/add-transaction', function (req, res) {
+router.post('/add-transaction',OTP, function (req, res) {
     var accountNumber = req.body.accountNumber;
     var transferTo = req.body.transferTo;
     var transferMoney = req.body.transferMoney;
