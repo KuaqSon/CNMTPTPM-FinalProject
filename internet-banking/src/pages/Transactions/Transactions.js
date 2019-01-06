@@ -49,9 +49,10 @@ class Transactions extends React.Component {
 
   render() {
     const { currentStep } = this.state;
-    const { sendCard } = this.props;
+    const { sendCard, recipientCard } = this.props;
 
-    console.log(sendCard);
+    console.log("step 1:", sendCard);
+    console.log("step 2:", recipientCard);
     return (
       <div>
         <div className="p-1">
@@ -100,6 +101,7 @@ class Transactions extends React.Component {
 const mapStateToProps = (state) => {
   return {
     sendCard: state.transaction.sendCard,
+    recipientCard: state.transaction.recipientCard
   }
 }
 

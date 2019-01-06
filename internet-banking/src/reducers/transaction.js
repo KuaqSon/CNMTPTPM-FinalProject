@@ -1,11 +1,13 @@
 import {
     TRANSACTION_SEND_CARD,
+    TRANSACTION_RECIPIENT_CARD,
   } from  '../actions/transaction';
   
   const initialState = {
     data: [],
     status: false,
-    sendCard: ''
+    sendCard: '',
+    recipientCard: ''
   };
   
   const transaction = (state = initialState, action) => {
@@ -15,6 +17,12 @@ import {
           ...state,
           sendCard: action.data
         }
+
+      case TRANSACTION_RECIPIENT_CARD: 
+      return {
+        ...state,
+        recipientCard: action.data
+      }
   
       default:
         return state;

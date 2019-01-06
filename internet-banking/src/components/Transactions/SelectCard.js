@@ -77,22 +77,6 @@ class SelectCard extends Component {
     this.props.setSendCard({
       cardId: id
     })
-    // this.props.negativePayment({
-    //   idPayment: id
-    // })
-    // .then(data => {
-    //   const {isError} = data;
-    //   if(isError) {
-    //     this.setState({
-    //       isError: true,
-    //       modalSuccessVisible: false
-    //     })
-    //   } else {
-    //     this.setState({
-    //       loading: false
-    //     })
-    //   }
-    // }).catch(error => console.log("fail"))  
     
   }
 
