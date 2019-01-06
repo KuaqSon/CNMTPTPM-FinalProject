@@ -23,7 +23,7 @@ router.get('/accounts', function (req, res) {
 })
 
 router.post('/accounts', function (req, res) {
-    var idUser = req.idUser;
+    var idUser = req.body.idUser;
     Account.find({ idUser: idUser }, function (err, accounts) {
         if (err) {
             return res.json({
@@ -33,11 +33,12 @@ router.post('/accounts', function (req, res) {
             });
 
         }
-        if (accounts) return res.json({
-            resp: accounts,
-            isError: false,
-            msg: null
-        });
+        if (accounts) 
+            return res.json({
+                resp: accounts,
+                isError: false,
+                msg: 'success'
+            });
         else return res.json({
             accounts: null
         });

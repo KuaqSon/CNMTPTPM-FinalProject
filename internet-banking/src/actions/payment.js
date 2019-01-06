@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 export const ADD_PAYMENT = "ADD_PAYMENT";
-export const FETCH_PAYMENT = "FETCH_CLIENTS";
-export const FETCH_PAYMENT_STATUS = "FETCH_CLIENTS_STATUS";
+export const FETCH_PAYMENT = "FETCH_PAYMENT";
+export const FETCH_PAYMENT_STATUS = "FETCH_PAYMENT_STATUS";
 
 export function addPayment(data) {
   return (dispatch) => new Promise((resolve, reject) => {
@@ -26,9 +26,15 @@ export function addPayment(data) {
   });
 }
 
-export function fetchPayment() {
-  return function (dispatch) {
-    axios.get('http://localhost:3000/employee/accounts')
+export function fetchPayment(data) {
+  return (dispatch) => new Promise((resolve, reject) => {
+    axios(`http://localhost:3000/employee/accounts`, {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      data: {
+        ...data
+      }
+    })
       .then(res => res.data)
       .then(data => {
         const { resp, isError, msg } = data;
@@ -42,7 +48,7 @@ export function fetchPayment() {
       .catch(error => {
         dispatch(fetchPaymentStatus(0));
       })
-  }
+  });
 }
 
 export function fetchPaymentStatus(status) {

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import { Header, Icon, Table, Button, Dimmer, Loader, Modal } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { fetchClients } from '../../actions/clients';
@@ -62,6 +63,10 @@ class ClientsList extends Component {
         })
         console.log("fail")
       });
+  }
+
+  rechargeClient = (id) => {
+    this.props.history.push(`/dashboard/clients/recharge/${id}`);
   }
 
   render() {
@@ -167,7 +172,7 @@ class ClientsList extends Component {
                         <Icon name='credit card outline' />
                       </Button.Content>
                     </Button>
-                    <Button animated='fade' inverted color='brown'>
+                    <Button animated='fade' inverted color='brown' onClick={() => this.rechargeClient(c._id)}>
                       <Button.Content visible>Recharge</Button.Content>
                       <Button.Content hidden>
                         <Icon name='money bill alternate outline' />
@@ -198,7 +203,7 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(
+export default withRouter(connect(
   mapStateToProps,
   mapDispatchToProps
-)(ClientsList);
+)(ClientsList));
