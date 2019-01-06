@@ -1,6 +1,7 @@
 import {
   FETCH_PAYMENT,
   FETCH_PAYMENT_STATUS,
+  NEGATIVE_PAYMENT
 } from '../actions/payment';
 
 const initialState = {
@@ -21,7 +22,7 @@ const payment = (state = initialState, action) => {
         ...state,
         status: action.status
       }
-
+      
     default:
       return state;
   }

@@ -66,6 +66,7 @@ router.post('/active-account', function (req, res) {
         _id: idPayment
     }, function (err, account) {
         if (account) {
+            console.log(account);
             if (account.asset === 0) {
                 account.isActive = false;
                 account.save(function (err) {
@@ -73,7 +74,7 @@ router.post('/active-account', function (req, res) {
                         return res.json({
                             resp: null,
                             isError: true,
-                            msg: null
+                            msg: null   
                         })
                     }
                     return res.json({
@@ -85,12 +86,14 @@ router.post('/active-account', function (req, res) {
             } else {
                 return res.json({
                     resp: { account: account },
-                    isError: false,
+                    isError: true,
                     msg: 'have money'
                 })
             }
         } else {
             return res.json({
+                resp: null,
+                isError: true,
                 msg: 'user not found!'
             });
         }
@@ -509,7 +512,8 @@ router.post('/get-account', auth, function (req, res) {
     const idUser = req.body.idUser;
 
     Account.find({
-        idUser: idUser
+        idUser: idUser,
+        isActive: true
     }, function (err, accounts) {
         if (err) {
             res.json({

@@ -47,18 +47,25 @@ class NewRecipientForm extends Component {
   handleAddRecipient = (number) => {
     const { user } = this.props;
     const { _id } = user;
+    this.setState({
+      loading: true
+    })
     this.props.addRecipient({
       idUser: _id,
       accountNumber: number
     })
       .then(data => {
         const { isError } = data;
-        if (!isError) {
+        if (isError) {
           this.setState({
             addError: true,
-            isFound: false
+            isFound: false,
+            loading: false
           })
         } else {
+          this.setState({
+            loading: false
+          })
           this.props.history.push("/dashboard/recipients")
         }
       })

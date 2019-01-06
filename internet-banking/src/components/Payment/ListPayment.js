@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Grid, Dimmer, Loader, Modal, Button } from 'semantic-ui-react';
+import { Grid, Dimmer, Loader, Modal, Button, Message } from 'semantic-ui-react';
 import PaymentCard from './PaymentCard';
-import { fetchPayment } from '../../actions/payment';
+import { fetchPayment, negativePayment } from '../../actions/payment';
 import { fetchUserData } from '../../actions/auth';
 import { connect } from 'react-redux';
 
@@ -11,6 +11,7 @@ class ListPayment extends Component {
 
     this.state = {
       loading: false,
+      isError: false,
       modalVisible: false,
       modalSuccessVisible: false,
       selectedNumber: '',
@@ -56,13 +57,30 @@ class ListPayment extends Component {
     if (id === '') {
       return;
     }
-
+    
     this.setState({
       loading: true,
       modalVisible: false,
       modalSuccessVisible: true
     })
 
+    this.props.negativePayment({
+      idPayment: id
+    })
+    .then(data => {
+      const {isError} = data;
+      if(isError) {
+        this.setState({
+          isError: true,
+          modalSuccessVisible: false
+        })
+      } else {
+        this.setState({
+          loading: false
+        })
+      }
+    }).catch(error => console.log("fail"))  
+    
     // this.props.rechargePayment({
     //   accountId: id,
     //   asset: this.state.recharge
@@ -78,11 +96,12 @@ class ListPayment extends Component {
     //     })
     //     console.log("fail")
     //   });
+
   }
 
   render() {
     const { payments, fetchPaymentsStatus } = this.props;
-    const { modalVisible, modalSuccessVisible, loading } = this.state;
+    const { modalVisible, modalSuccessVisible, loading, isError } = this.state;
     console.log(payments);
 
     if (!fetchPaymentsStatus) {
@@ -145,7 +164,8 @@ class ListPayment extends Component {
               />
             </Modal.Actions>
           </Modal>
-
+          { isError &&
+            <Message color="orange">This payment is still have money, can't close it!</Message>}
           <Grid>
             <Grid.Row columns={4}>
               {payments.map(p =>
@@ -178,7 +198,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchPayment: data => dispatch(fetchPayment(data)),
-    fetchUserData: () => dispatch(fetchUserData())
+    fetchUserData: () => dispatch(fetchUserData()),
+    negativePayment: data => dispatch(negativePayment(data))
   }
 }
 

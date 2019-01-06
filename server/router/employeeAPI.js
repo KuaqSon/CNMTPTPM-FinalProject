@@ -24,7 +24,7 @@ router.get('/accounts', function (req, res) {
 
 router.post('/accounts', function (req, res) {
     var idUser = req.body.idUser;
-    Account.find({ idUser: idUser }, function (err, accounts) {
+    Account.find({ idUser: idUser, isActive: true }, function (err, accounts) {
         if (err) {
             return res.json({
                 resp: null,
