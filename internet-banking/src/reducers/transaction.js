@@ -2,6 +2,7 @@ import {
     TRANSACTION_SEND_CARD,
     TRANSACTION_RECIPIENT_CARD,
     TRANSACTION_INFO,
+    TRANSACTION_PAYER,
   } from  '../actions/transaction';
   
   const initialState = {
@@ -9,7 +10,8 @@ import {
     status: false,
     sendCard: '',
     recipientCard: '',
-    infor: ''
+    infor: '',
+    payer: false,
   };
   
   const transaction = (state = initialState, action) => {
@@ -30,6 +32,12 @@ import {
         return {
           ...state,
           infor: action.data
+        }
+      
+      case TRANSACTION_PAYER:
+        return {
+          ...state,
+          payer: action.data
         }
   
       default:

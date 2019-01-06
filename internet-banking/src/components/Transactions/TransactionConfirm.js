@@ -1,13 +1,23 @@
-import React, { Component } from 'react'
-import { Button, Icon, Card, Input, Radio, Select, TextArea, Segment, Grid } from 'semantic-ui-react'
+import React, { Component } from 'react';
+import { Button, Icon, Card, Input, Radio, Select, Message, Segment, Grid } from 'semantic-ui-react';
+import { connect } from 'react-redux';
+import { setTransactionPayer } from '../../actions/transaction';
 
 class TransactionConfirm extends Component {
-  state = {}
+  state = {isPayer: false}
 
-  handleChange = (e, { value }) => this.setState({ value })
+  hanldPayer = (pay) => {
+    this.setState({
+      isPayer: pay
+    })
+
+    this.props.setTransactionPayer(pay);
+  }
+
+
 
   render() {
-    const { value } = this.state
+    const { isPayer } = this.state
     return (
       <Segment textAlign="center">
         <div className="mt-2 w-600 m-auto">
@@ -20,7 +30,7 @@ class TransactionConfirm extends Component {
                     <Card.Description>Payee will pay the transfer fee.</Card.Description>
                   </Card.Content>
                   <Card.Content extra>
-                    <Button inverted color='violet'>Select</Button>
+                    <Button inverted color='violet' onClick={() => this.hanldPayer(false)}>Select</Button>
                   </Card.Content>
                 </Card>
               </Grid.Column>
@@ -31,19 +41,15 @@ class TransactionConfirm extends Component {
                     <Card.Description>Payer will pay the transfer fee</Card.Description>
                   </Card.Content>
                   <Card.Content extra>
-                    <Button inverted color='brown'>Select</Button>
+                    <Button inverted color='brown' onClick={() => this.hanldPayer(true)}>Select</Button>
                   </Card.Content>
                 </Card>
               </Grid.Column>
             </Grid.Row>
           </Grid>
           <div className="mt-3">
-            <Button animated color="google plus" size='big'>
-              <Button.Content visible>Confirm</Button.Content>
-              <Button.Content hidden>
-                <Icon name='arrow right' />
-              </Button.Content>
-            </Button>
+            { isPayer && <Message color="violet">Payer will pay the fee of transaction</Message>}
+            { !isPayer && <Message color="brown">Payee will pay the fee of transaction</Message>}
           </div>
         </div>
       </Segment>
@@ -51,4 +57,19 @@ class TransactionConfirm extends Component {
   }
 }
 
-export default TransactionConfirm
+
+const mapStateToProps = (state) => {
+  return {
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setTransactionPayer: data => dispatch(setTransactionPayer(data))
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TransactionConfirm);
