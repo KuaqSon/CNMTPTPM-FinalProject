@@ -54,3 +54,39 @@ export function addRecipient(data) {
       .catch(err => reject(err));
   })
 }
+
+export function deleteRecipient(data) {
+  return (dispatch) => new Promise((resolve, reject) => {
+    axios(`http://localhost:3000/user/delete-receiver`, {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      data: {
+        ...data
+      }
+    })
+      .then(res => res.data)
+      .then(data => {
+        dispatch({ type: ADD_RECIPIENT, data });
+        resolve(data);
+      })
+      .catch(err => reject(err));
+  })
+}
+
+export function updateRecipient(data) {
+  return (dispatch) => new Promise((resolve, reject) => {
+    axios(`http://localhost:3000/user/edit-receiver`, {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      data: {
+        ...data
+      }
+    })
+      .then(res => res.data)
+      .then(data => {
+        dispatch({ type: ADD_RECIPIENT, data });
+        resolve(data);
+      })
+      .catch(err => reject(err));
+  })
+}
