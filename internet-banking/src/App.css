@@ -67,3 +67,7 @@ body {
 .h-300 {
   height: 300px !important;
 }
+
+.h-100 {
+  min-height: 100px !important;
+}
