@@ -28,7 +28,7 @@ export function addPayment(data) {
 }
 
 export function fetchPayment(data) {
-  return (dispatch) => new Promise((resolve, reject) => {
+  return function (dispatch) {
     axios(`http://localhost:3000/employee/accounts`, {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
@@ -49,7 +49,7 @@ export function fetchPayment(data) {
       .catch(error => {
         dispatch(fetchPaymentStatus(0));
       })
-  });
+  };
 }
 
 export function fetchPaymentStatus(status) {

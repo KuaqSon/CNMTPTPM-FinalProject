@@ -21,9 +21,6 @@ class ListPayment extends Component {
 
   componentDidMount() {
     this.props.fetchUserData();
-  }
-  
-  componentWillReceiveProps() {
     this.loadPayment();
   }
 
@@ -86,6 +83,7 @@ class ListPayment extends Component {
   render() {
     const { payments, fetchPaymentsStatus } = this.props;
     const { modalVisible, modalSuccessVisible, loading } = this.state;
+    console.log(payments);
 
     if (!fetchPaymentsStatus) {
       return (

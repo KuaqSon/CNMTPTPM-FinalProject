@@ -523,30 +523,6 @@ router.post('/history', function (req, res) {
   })
 });
 
-<<<<<<< HEAD
-router.post('/history-all', auth, function (req, res) {
-  const idUser = req.body.idUser;
-  // console.log(idUser);
-  Transaction.find({
-    idUser: idUser
-  }, function (err, transactions) {
-    if (err) {
-      console.log(err);
-      res.statusCode = 400;
-      res.json({
-        resp: null,
-        isError: true,
-        msg: null
-      });
-    } else {
-      res.json({
-        resp: { transactions: transactions },
-        isError: false,
-        msg: null
-      });
-    }
-  })
-=======
 router.post('/history-all', function (req, res) {
     const idUser = req.body.idUser;
     Account.find({ idUser: idUser }, function (err, accounts) {
@@ -579,7 +555,6 @@ router.post('/history-all', function (req, res) {
             msg: null
         })
     })
->>>>>>> f/history
 });
 
 // finding account that wanna to tranfer
