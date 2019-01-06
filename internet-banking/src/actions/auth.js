@@ -32,7 +32,7 @@ export function login(data) {
 export function logout(data) {
   const userData = localStorage.getItem('userData');
   if (userData) {
-    const {_id} = userData;
+    const { _id } = userData;
     return function (dispatch) {
       axios(`http://localhost:3000/user/logout`, {
         method: 'post',
@@ -50,8 +50,8 @@ export function logout(data) {
 
 function setUserData(data) {
   console.log(data);
-  const {user, acceptToken, rfToken} = data;
-  localStorage.setItem('userData',  JSON.stringify(user));
+  const { user, acceptToken, rfToken } = data;
+  localStorage.setItem('userData', JSON.stringify(user));
   localStorage.setItem('acceptToken', acceptToken);
   localStorage.setItem('rfToken', rfToken);
 }
@@ -59,19 +59,21 @@ function setUserData(data) {
 export function fetchUserData() {
   const userData = localStorage.getItem('userData');
   if (userData) {
-    return {
-      type: FETCH_USER_DATA,
-      data: JSON.parse(userData)
+    return function (dispatch) {
+      dispatch({
+        type: FETCH_USER_DATA,
+        data: JSON.parse(userData)
+      });
     }
   } else {
-    return {
-      type: FETCH_USER_DATA,
-      data: {
-        name: ''
-      }
+    return function (dispatch) {
+      dispatch({
+        type: FETCH_USER_DATA,
+        data: { name: '', _id: '' }
+      });
     }
   }
-  
+
 }
 
 export function loginStatus(status) {

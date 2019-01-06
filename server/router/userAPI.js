@@ -607,69 +607,75 @@ router.post('/history-all', function (req, res) {
 // finding account that wanna to tranfer
 
 router.post('/find-account', function (req, res) {
-    const accountNumber = req.body.accountNumber;
 
-    Account.findOne({ accountNumber: accountNumber }, function (err, account) {
+const accountNumber = req.body.accountNumber;
+
+Account.findOne({ accountNumber: accountNumber }, function (err, account) {
+  if (err) {
+    return res.json({
+      resp: null,
+      isError: true,
+      msg: null
+    });
+  } else {
+    if (account) {
+      User.findById(account.idUser, function (err, user) {
         if (err) {
-            res.json({
-                resp: null,
-                isError: true,
-                msg: null
-            });
-            return;
+          return res.json({
+            resp: null,
+            isError: true,
+            msg: null
+          });
         } else {
-            if (account) {
-                User.findById(account.idUser, function (err, user) {
-                    if (err) {
-                        res.json({
-                            resp: null,
-                            isError: true,
-                            msg: null
-                        });
-                        return;
-                    } else {
-                        if (user) {
-                            res.json({
-                                resp: {
-                                    name: user.name,
-                                    accountNumber: accountNumber
-                                },
-                                isError: false,
-                                msg: null
-                            });
-                            return;
-                        } else {
-                            res.json({
-                                resp: null,
-                                isError: true,
-                                msg: 'User not found'
-                            });
-                            return;
-                        }
-                    }
-                })
-            }
+          if (user) {
+            return res.json({
+              resp: {
+                name: user.name,
+                accountNumber: accountNumber
+              },
+              isError: false,
+              msg: null
+            });
+          } else {
+            return res.json({
+              resp: null,
+              isError: true,
+              msg: 'Payment not found'
+            });
+          }
         }
-    })
+      })
+    } else {
+      return res.json({
+        resp: null,
+        isError: true,
+        msg: 'User not found'
+      });
+    }
+  }
+})
 });
 
+
+
 router.post('/recivers', function (req, res) {
-    const idUser = req.body.idUser;
-    Receiver.find({ idUser: idUser }, function (err, receivers) {
-        if (err) {
-            return res.json({
-                resp: null,
-                isError: true,
-                msg: null
-            });
-        }
-        return res.json({
-            resp: { receivers: receivers },
-            isError: false,
-            msg: null
-        });
-    })
+  const idUser = req.body.idUser;
+  Receiver.find({ idUser: idUser }, function (err, receivers) {
+    if (err) {
+      return res.json({
+        resp: null,
+        isError: true,
+        msg: null
+      });
+    }
+    return res.json({
+      resp: receivers,
+      isError: false,
+      msg: null
+    });
+  })
 })
+
 
 router.post('/add-receiver', function (req, res) {
     const idUser = req.body.idUser;
