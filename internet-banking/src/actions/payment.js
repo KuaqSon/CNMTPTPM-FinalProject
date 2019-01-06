@@ -4,6 +4,7 @@ export const ADD_PAYMENT = "ADD_PAYMENT";
 export const FETCH_PAYMENT = "FETCH_PAYMENT";
 export const FETCH_PAYMENT_STATUS = "FETCH_PAYMENT_STATUS";
 export const RECHARGE_PAYMENT = "RECHARGE_PAYMENT";
+export const GET_PAYMENT = "GET_PAYMENT";
 
 export function addPayment(data) {
   return (dispatch) => new Promise((resolve, reject) => {
@@ -79,4 +80,23 @@ export function rechargePayment(data) {
       })
       .catch(err => reject(err));
   });
+}
+
+export function getPayment(data) {
+  return (dispatch) => new Promise((resolve, reject) => {
+    axios(`http://localhost:3000/user/find-account`, {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      data: {
+        ...data
+      }
+    })
+      .then(res => res.data)
+      .then(data => {
+        console.log(data);
+        dispatch({ type: GET_PAYMENT, data: data });
+        resolve(data);
+      })
+      .catch(error => reject(error))
+  })
 }

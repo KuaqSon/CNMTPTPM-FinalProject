@@ -36,3 +36,21 @@ export function fetchRecipientStatus(status) {
     status
   }
 }
+
+export function addRecipient(data) {
+  return (dispatch) => new Promise((resolve, reject) => {
+    axios(`http://localhost:3000/user/add-receiver`, {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      data: {
+        ...data
+      }
+    })
+      .then(res => res.data)
+      .then(data => {
+        dispatch({ type: ADD_RECIPIENT, data });
+        resolve(data);
+      })
+      .catch(err => reject(err));
+  })
+}

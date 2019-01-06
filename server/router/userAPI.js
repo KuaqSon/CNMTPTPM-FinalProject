@@ -604,30 +604,28 @@ router.post('/history-all', function (req, res) {
 
 // finding account that wanna to tranfer
 
-router.post('/find-account', auth, function (req, res) {
+router.post('/find-account', function (req, res) {
   const accountNumber = req.body.accountNumber;
 
   Account.findOne({ accountNumber: accountNumber }, function (err, account) {
     if (err) {
-      res.json({
+      return res.json({
         resp: null,
         isError: true,
         msg: null
       });
-      return;
     } else {
       if (account) {
         User.findById(account.idUser, function (err, user) {
           if (err) {
-            res.json({
+            return res.json({
               resp: null,
               isError: true,
               msg: null
             });
-            return;
           } else {
             if (user) {
-              res.json({
+              return res.json({
                 resp: {
                   name: user.name,
                   accountNumber: accountNumber
@@ -635,17 +633,21 @@ router.post('/find-account', auth, function (req, res) {
                 isError: false,
                 msg: null
               });
-              return;
             } else {
-              res.json({
+              return res.json({
                 resp: null,
                 isError: true,
-                msg: 'User not found'
+                msg: 'Payment not found'
               });
-              return;
             }
           }
         })
+      } else {
+        return res.json({
+          resp: null,
+          isError: true,
+          msg: 'User not found'
+        });
       }
     }
   })
@@ -662,7 +664,7 @@ router.post('/recivers', function (req, res) {
       });
     }
     return res.json({
-      resp: { receivers: receivers },
+      resp: receivers,
       isError: false,
       msg: null
     });
