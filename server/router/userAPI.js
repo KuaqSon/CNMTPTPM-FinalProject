@@ -543,7 +543,7 @@ router.post('/history', function (req, res) {
                     { idUserReceive: idUser }
                 ]
             },
-            { created:  {$gte: start, $lt: end} }
+            { created: { $gte: start, $lt: end } }
         ]
     }, function (err, transactions) {
         if (err) {
@@ -608,72 +608,75 @@ router.post('/history-all', function (req, res) {
 
 router.post('/find-account', function (req, res) {
 
-const accountNumber = req.body.accountNumber;
+    const accountNumber = req.body.accountNumber;
 
-Account.findOne({ accountNumber: accountNumber }, function (err, account) {
-  if (err) {
-    return res.json({
-      resp: null,
-      isError: true,
-      msg: null
-    });
-  } else {
-    if (account) {
-      User.findById(account.idUser, function (err, user) {
+    Account.findOne({ accountNumber: accountNumber }, function (err, account) {
         if (err) {
-          return res.json({
-            resp: null,
-            isError: true,
-            msg: null
-          });
+            return res.json({
+                resp: null,
+                isError: true,
+                msg: null
+            });
         } else {
-          if (user) {
-            return res.json({
-              resp: {
-                name: user.name,
-                accountNumber: accountNumber
-              },
-              isError: false,
-              msg: null
-            });
-          } else {
-            return res.json({
-              resp: null,
-              isError: true,
-              msg: 'Payment not found'
-            });
-          }
+            if (account) {
+                User.findById(account.idUser, function (err, user) {
+                    if (err) {
+                        return res.json({
+                            resp: null,
+                            isError: true,
+                            msg: null
+                        });
+                    } else {
+                        if (user) {
+                            return res.json({
+                                resp: {
+                                    name: user.name,
+                                    accountNumber: accountNumber
+                                },
+                                isError: false,
+                                msg: null
+                            });
+                        } else {
+                            return res.json({
+                                resp: null,
+                                isError: true,
+                                msg: 'Payment not found'
+                            });
+                        }
+                    }
+                })
+            } else {
+                return res.json({
+                    resp: null,
+                    isError: true,
+                    msg: 'User not found'
+                });
+            }
         }
-      })
-    } else {
-      return res.json({
-        resp: null,
-        isError: true,
-        msg: 'User not found'
-      });
-    }
-  }
-})
+    })
 });
 
 
 
 router.post('/recivers', function (req, res) {
-  const idUser = req.body.idUser;
-  Receiver.find({ idUser: idUser }, function (err, receivers) {
-    if (err) {
-      return res.json({
-        resp: null,
-        isError: true,
-        msg: null
-      });
-    }
-    return res.json({
-      resp: receivers,
-      isError: false,
-      msg: null
-    });
-  })
+    const idUser = req.body.idUser;
+    Receiver.find({ idUser: idUser }, function (err, receivers) {
+        if (err) {
+            return res.json({
+                resp: null,
+                isError: true,
+                msg: null
+            });
+        }
+        if (receivers) {
+            console.log(receivers);
+            return res.json({
+                resp: receivers,
+                isError: false,
+                msg: null
+            });
+        }
+    })
 })
 
 

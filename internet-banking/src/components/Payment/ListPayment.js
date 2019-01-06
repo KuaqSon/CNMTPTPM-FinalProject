@@ -98,7 +98,6 @@ class ListPayment extends Component {
             dimmer="blurring"
             size="tiny"
             open={modalVisible}
-            closeOnDimmerClick={false}
             onClose={this.closeModal}
           >
             <Modal.Header>Payment infor</Modal.Header>
