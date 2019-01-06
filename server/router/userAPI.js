@@ -559,7 +559,7 @@ router.post('/history', function (req, res) {
         }
         if (transactions) {
             return res.json({
-                resp: { transactions: transactions },
+                resp: transactions,
                 isError: false,
                 msg: null
             });
