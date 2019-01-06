@@ -7,7 +7,7 @@ var bcrypt = require('bcrypt');
 // const rfToken = require('../model/refreshToken');
 const moment = require('moment')
 // const User = require('../model/user');
-
+const randomString = require('randomstring');
 const Account = require('../model/account');
 
 router.get('', function (req, res) {
@@ -23,17 +23,22 @@ router.get('/accounts', function (req, res) {
 })
 
 router.post('/accounts', function (req, res) {
-    var idUser = req.idUser;
+    var idUser = req.body.idUser;
     Account.find({ idUser: idUser }, function (err, accounts) {
         if (err) {
             return res.json({
-                msg: 'err'
+                resp: null,
+                isError: true,
+                msg: "No user"
             });
 
         }
-        if (accounts) return res.json({
-            accounts: accounts
-        });
+        if (accounts)
+            return res.json({
+                resp: accounts,
+                isError: false,
+                msg: 'success'
+            });
         else return res.json({
             accounts: null
         });
@@ -110,7 +115,6 @@ router.get('/user', function (req, res) {
 });
 router.post('/add-account', function (req, res) {
     var idUser = req.body.idUser;
-    var accountNumber = req.body.accountNumber;
     var asset = req.body.asset;
     var isAcive = true;
 
@@ -118,48 +122,85 @@ router.post('/add-account', function (req, res) {
         _id: idUser
     }, function (err, user) {
         if (user) {
-            if (user.numberOfAccount >= 2) {
-                res.json({
-                    msg: "User just have 2 account!"
-                })
-            } else {
-                Account.findOne({
-                    accountNumber: accountNumber
-                }, function (err, account) {
-                    if (account) {
-                        res.json({
-                            msg: "account number exited"
-                        });
-                        return;
-                    } else {
-                        var account = new Account({
-                            idUser: idUser,
-                            accountNumber: accountNumber,
-                            asset: asset,
-                            created: moment().format(),
-                            isAcive: isAcive
-                        });
-                        account.save(function (err) {
-                            if (err) {
-                                res.json({
-                                    msg: "err"
-                                });
-                                return;
-                            } else {
-                                user.numberOfAccount++;
-                                user.save();
-                                Account.find({ idUser: idUser }, function (err, accounts) {
-                                    res.json({
-                                        accounts: accounts
-                                    });
-                                })
-                                return;
-                            }
-                        });
+            var available = false;
+            while (!available) {
+                var accountNumber = randomString.generate({
+                    length: 11,
+                    charset: '1234567890'
+                });
 
-                    }
-                })
+                if (isAvailableNumber(accountNumber)) {
+                    var account = new Account({
+                        idUser: idUser,
+                        accountNumber: accountNumber,
+                        asset: asset,
+                        created: moment().format(),
+                        isAcive: isAcive
+                    });
+                    account.save(function (err) {
+                        if (err) {
+                            res.json({
+                                msg: "err"
+                            });
+                            return;
+                        } else {
+                            user.numberOfAccount++;
+                            user.save();
+                            Account.find({ idUser: idUser }, function (err, accounts) {
+                                res.json({
+                                    accounts: accounts
+                                });
+                            })
+                            return;
+                        }
+                    });
+                    available = true;
+                }
             }
+
+
+            // if (user.numberOfAccount >= 2) {
+            //     res.json({
+            //         msg: "User just have 2 account!"
+            //     })
+            // } else {
+            //     Account.findOne({
+            //         accountNumber: accountNumber
+            //     }, function (err, account) {
+            //         if (account) {
+            //             res.json({
+            //                 msg: "account number exited"
+            //             });
+            //             return;
+            //         } else {
+            //             var account = new Account({
+            //                 idUser: idUser,
+            //                 accountNumber: accountNumber,
+            //                 asset: asset,
+            //                 created: moment().format(),
+            //                 isAcive: isAcive
+            //             });
+            //             account.save(function (err) {
+            //                 if (err) {
+            //                     res.json({
+            //                         msg: "err"
+            //                     });
+            //                     return;
+            //                 } else {
+            //                     user.numberOfAccount++;
+            //                     user.save();
+            //                     Account.find({ idUser: idUser }, function (err, accounts) {
+            //                         res.json({
+            //                             accounts: accounts
+            //                         });
+            //                     })
+            //                     return;
+            //                 }
+            //             });
+
+            //         }
+            //     })
+            // }
         } else {
             res.json({
                 msg: "User not found!"
@@ -168,5 +209,61 @@ router.post('/add-account', function (req, res) {
     });
 
 });
+
+router.post('/recharge-payment', function (req, res) {
+    var accountId = req.body.accountId;
+    var asset = req.body.asset;
+    Account.findOne({
+        _id: accountId,
+        isActive: true
+    }, function (err, account) {
+        if (err) {
+            console.log(err);
+            res.json({
+                msg: err
+            });
+        } else {
+            if (account) {
+                account.asset = Number(account.asset) + Number(asset);
+                account.save(function (err) {
+                    if (err) {
+                        console.log(err);
+                        res.json({
+                            resp: null,
+                            isError: true,
+                            msg: "No account"
+                        });
+                    } else {
+                        res.json({
+                            resp: null,
+                            isError: false,
+                            msg: "Success"
+                        });
+                    }
+
+                });
+            } else {
+                console.log("user is not exited!");
+                res.json({
+                    msg: "user is not exited!"
+                });
+            }
+
+        }
+
+    })
+});
+
+function isAvailableNumber(number) {
+    return Account.findOne({
+        accountNumber: number
+    }, function (err, account) {
+        if (account) {
+            return false;
+        } else {
+            return true;
+        }
+    })
+}
 
 module.exports = router;

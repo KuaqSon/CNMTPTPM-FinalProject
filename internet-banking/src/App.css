@@ -63,3 +63,11 @@ body {
 .w-600 {
   max-width: 600px !important;
 }
+
+.h-300 {
+  height: 300px !important;
+}
+
+.h-100 {
+  min-height: 100px !important;
+}

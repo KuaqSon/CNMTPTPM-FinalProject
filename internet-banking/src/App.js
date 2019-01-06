@@ -13,6 +13,7 @@ import Recipients from './pages/Recipients/Recipients';
 import HistoryPage from './pages/History/History';
 import Clients from './pages/Clients/Clients';
 import NewClient from './pages/Clients/NewClient';
+import Recharge from './pages/Clients/Recharge';
 
 class App extends Component {
   render() {
@@ -29,6 +30,7 @@ class App extends Component {
             <Route exact path="/dashboard/history" component={HistoryPage} />
             <Route exact path="/dashboard/clients" component={Clients} />
             <Route exact path="/dashboard/clients/new" component={NewClient} />
+            <Route exact path="/dashboard/clients/recharge/:clientId" component={Recharge} />
           </Layout>
         </Switch>
       </Router>

@@ -27,14 +27,14 @@ class Clients extends Component {
         </div>
         <div style={{ marginTop: '2em', marginBottom: '1em' }}>
           <div>
-            <Segment>
-              <Button animated='fade' onClick={() => this.gotoNewClient()}>
+            <div className="mb-2">
+              <Button animated='fade' inverted color='violet' onClick={() => this.gotoNewClient()}>
                 <Button.Content visible>New Client</Button.Content>
                 <Button.Content hidden>
                 <Icon name='add' />
                 </Button.Content>
               </Button>
-            </Segment>
+            </div>
           </div>
           <ClientsList />
         </div>

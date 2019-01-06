@@ -17,7 +17,7 @@ class PaymentCard extends Component {
             <Feed.Event>
               <Feed.Content>
                 <Feed.Summary>
-                  {balance}
+                  {balance > 0 ? "$" + balance : "0"}
                 </Feed.Summary>
               </Feed.Content>
             </Feed.Event>
