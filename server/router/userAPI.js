@@ -532,11 +532,19 @@ router.post('/get-account', auth, function (req, res) {
 })
 
 router.post('/history', function (req, res) {
-
     const idUser = req.body.idUser;
-
+    const start = moment().subtract(30, 'days').format();
+    const end = moment().format();
     Transaction.find({
-        $or: [{ idUserSend: idUser }, { idUserReceive: idUser }]
+        $and: [
+            {
+                $or: [
+                    { idUserSend: idUser },
+                    { idUserReceive: idUser }
+                ]
+            },
+            { created:  {$gte: start, $lt: end} }
+        ]
     }, function (err, transactions) {
         if (err) {
             return res.json({
@@ -546,16 +554,6 @@ router.post('/history', function (req, res) {
             });
         }
         if (transactions) {
-            // transactions.forEach(transaction => {
-            //     // transaction["nameUserSend"] = User.findById(transaction.idUserSend).name;
-            //     User.findById(transaction.idUserSend), function(err, user){
-            //         if(user)
-            //         console.log(user.name);
-            //         else 
-            //         console.log('đéo')
-            //     }
-            //     // transaction["nameUserReceive"] = User.findById(transaction.idUserReceive).name;
-            // });
             return res.json({
                 resp: { transactions: transactions },
                 isError: false,
@@ -608,7 +606,7 @@ router.post('/history-all', function (req, res) {
 
 // finding account that wanna to tranfer
 
-router.post('/find-account', auth, function (req, res) {
+router.post('/find-account', function (req, res) {
     const accountNumber = req.body.accountNumber;
 
     Account.findOne({ accountNumber: accountNumber }, function (err, account) {
