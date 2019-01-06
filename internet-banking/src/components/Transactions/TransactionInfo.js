@@ -1,22 +1,52 @@
-import React, { Component } from 'react'
-import { Button, Checkbox, Form, Input, Radio, Select, TextArea, Segment } from 'semantic-ui-react'
+import React, { Component } from 'react';
+import { Button, Icon, Form, Input, Radio, Select, TextArea, Segment } from 'semantic-ui-react';
+import { connect } from 'react-redux';
+import { setTransactionInfo } from '../../actions/transaction';
 
 class TransactionInfor extends Component {
-  state = {}
+  state = { name: '', amount: '', message: '', password: '', phone: '', loading: false }
+  handleChange = (e, { name, value }) => this.setState({ [name]: value })
+ 
+  handleSubmit () {
+    const {amount, message } = this.state;
+    this.setState({
+      loading: true
+    })
 
-  handleChange = (e, { value }) => this.setState({ value })
+    this.props.setTransactionInfo({
+      amount,
+      message
+    })
+
+  }
 
   render() {
-    const { value } = this.state
+    const { amount, message } = this.state
     return (
       <Segment>
         <div className="mt-2">
           <Form className="w-600 m-auto">
-            <Form.Group>
-              <Form.Field control={Input} label='Amount' placeholder='0.00' icon='dollar' type="number"/>
-            </Form.Group>
-            <Form.Field control={TextArea} label='Message' placeholder='Type message for your transfer' />
-            <Form.Field control={Button}>Submit</Form.Field>
+              <Form.Input
+                name='amount'
+                value={amount}
+                label='Amount'
+                icon="dollar"
+                placeholder='0.00'
+                onChange={this.handleChange}
+              />
+              <Form.TextArea
+                name='message'
+                value={message}
+                label='Message'
+                placeholder='Enter username'
+                onChange={this.handleChange}
+              />
+              <Button animated='fade' onClick={() => this.handleSubmit()}>
+              <Button.Content visible>Submit</Button.Content>
+              <Button.Content hidden>
+                <Icon name='check' />
+              </Button.Content>
+            </Button>
           </Form>
         </div>
       </Segment>
@@ -24,4 +54,19 @@ class TransactionInfor extends Component {
   }
 }
 
-export default TransactionInfor
+
+const mapStateToProps = (state) => {
+  return {
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setTransactionInfo: data => dispatch(setTransactionInfo(data))
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TransactionInfor);
