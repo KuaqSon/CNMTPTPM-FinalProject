@@ -3,6 +3,7 @@ import axios from 'axios';
 export const ADD_PAYMENT = "ADD_PAYMENT";
 export const FETCH_PAYMENT = "FETCH_PAYMENT";
 export const FETCH_PAYMENT_STATUS = "FETCH_PAYMENT_STATUS";
+export const RECHARGE_PAYMENT = "RECHARGE_PAYMENT";
 
 export function addPayment(data) {
   return (dispatch) => new Promise((resolve, reject) => {
@@ -56,4 +57,26 @@ export function fetchPaymentStatus(status) {
     type: FETCH_PAYMENT_STATUS,
     status
   }
+}
+
+export function rechargePayment(data) {
+  return (dispatch) => new Promise((resolve, reject) => {
+    axios(`http://localhost:3000/employee/recharge-payment`, {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      data: {
+        ...data
+      }
+    })
+      .then(res => res.data)
+      .then(data => {
+        const { resp, isError } = data;
+
+        if (!isError) {
+          dispatch({ type: RECHARGE_PAYMENT, data: resp });
+          resolve(data);
+        }
+      })
+      .catch(err => reject(err));
+  });
 }

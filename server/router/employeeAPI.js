@@ -33,7 +33,7 @@ router.post('/accounts', function (req, res) {
             });
 
         }
-        if (accounts) 
+        if (accounts)
             return res.json({
                 resp: accounts,
                 isError: false,
@@ -117,7 +117,7 @@ router.post('/add-account', function (req, res) {
     var idUser = req.body.idUser;
     var asset = req.body.asset;
     var isAcive = true;
-    
+
     User.findOne({
         _id: idUser
     }, function (err, user) {
@@ -129,7 +129,7 @@ router.post('/add-account', function (req, res) {
                     charset: '1234567890'
                 });
 
-                if(isAvailableNumber(accountNumber)) {
+                if (isAvailableNumber(accountNumber)) {
                     var account = new Account({
                         idUser: idUser,
                         accountNumber: accountNumber,
@@ -210,13 +210,57 @@ router.post('/add-account', function (req, res) {
 
 });
 
+router.post('/recharge-payment', function (req, res) {
+    var accountId = req.body.accountId;
+    var asset = req.body.asset;
+    Account.findOne({
+        _id: accountId,
+        isActive: true
+    }, function (err, account) {
+        if (err) {
+            console.log(err);
+            res.json({
+                msg: err
+            });
+        } else {
+            if (account) {
+                account.asset = Number(account.asset) + Number(asset);
+                account.save(function (err) {
+                    if (err) {
+                        console.log(err);
+                        res.json({
+                            resp: null,
+                            isError: true,
+                            msg: "No account"
+                        });
+                    } else {
+                        res.json({
+                            resp: null,
+                            isError: false,
+                            msg: "Success"
+                        });
+                    }
+
+                });
+            } else {
+                console.log("user is not exited!");
+                res.json({
+                    msg: "user is not exited!"
+                });
+            }
+
+        }
+
+    })
+});
+
 function isAvailableNumber(number) {
     return Account.findOne({
         accountNumber: number
     }, function (err, account) {
         if (account) {
             return false;
-        } else { 
+        } else {
             return true;
         }
     })
