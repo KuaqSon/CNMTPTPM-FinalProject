@@ -261,11 +261,13 @@ router.post('/updateToken', function (req, res) {
 });
 
 
-router.post('/add-transaction', OTP, function (req, res) {
+router.post('/add-transaction', function (req, res) {
     var accountNumber = req.body.accountNumber;
     var transferTo = req.body.transferTo;
     var transferMoney = req.body.transferMoney;
     var infor = req.body.infor;
+
+
     // var checkCapcha = req.body.checkCapcha;
     // Type transaction
     // = 1 create => user add money to themself
@@ -348,31 +350,63 @@ router.post('/add-transaction', OTP, function (req, res) {
                                 })
 
                                 // add Transaction
-                                var transaction = new Transaction({
-                                    accountNumber: accountNumber,
-                                    transferTo: transferTo,
-                                    transferMoney: transferMoney,
-                                    infor: infor,
-                                    create: Date.now()
-                                })
-                                transaction.save(function (err) {
-                                    if (err) {
-                                        console.log(err)
-                                        res.json({
-                                            resp: null,
-                                            isError: true,
-                                            msg: null
-                                        });
-                                        return;
-                                    } else {
-                                        res.json({
-                                            resp: { transaction: transaction },
-                                            isError: false,
-                                            msg: null
-                                        });
-                                        return;
+                                Account.findOne({ accountNumber: accountNumber }, function (err, account) {
+                                    if (account) {
+                                        var idUserSend = account.idUser;
+                                        var idPaymentSend = account._id;
+                                        User.findById(idUserSend, function (err, user) {
+                                            if (user) {
+                                                var nameUserSend = user.name;
+                                                Account.findOne({ accountNumber: transferTo }, function (err, account) {
+                                                    if (account) {
+                                                        var idUserReceive = account.idUser;
+                                                        var idPaymentReceive = account._id;
+                                                        User.findOne({ _id: idUserReceive }, function (err, user) {
+                                                            if (user) {
+                                                                var nameUserReceive = user.name;
+                                                                var transaction = new Transaction({
+                                                                    accountNumber: accountNumber,
+                                                                    transferTo: transferTo,
+                                                                    transferMoney: transferMoney,
+                                                                    infor: infor,
+                                                                    idUserSend: idUserSend,
+                                                                    nameUserSend: nameUserSend,
+                                                                    idPaymentSend: idPaymentSend,
+                                                                    idUserReceive: idUserReceive,
+                                                                    idPaymentReceive: idPaymentReceive,
+                                                                    nameUserReceive: nameUserReceive,
+                                                                    created: moment().format()
+                                                                })
+                                                                transaction.save(function (err) {
+                                                                    if (err) {
+                                                                        console.log(err)
+                                                                        res.json({
+                                                                            resp: null,
+                                                                            isError: true,
+                                                                            msg: null
+                                                                        });
+                                                                        return;
+                                                                    } else {
+                                                                        console.log(transaction.create);
+                                                                        res.json({
+                                                                            resp: { transaction: transaction },
+                                                                            isError: false,
+                                                                            msg: null
+                                                                        });
+                                                                        return;
+                                                                    }
+                                                                })
+
+                                                            } else { console.log(err); return }
+                                                        })
+                                                    }
+                                                })
+                                            }
+                                        })
                                     }
                                 })
+
+
                                 // end add Transaction
 
 
@@ -501,27 +535,44 @@ router.post('/get-account', auth, function (req, res) {
 })
 
 router.post('/history', function (req, res) {
-    const accountNumber = req.body.accountNumber;
+
+    const idUser = req.body.idUser;
+
     Transaction.find({
-        $or: [{ accountNumber: accountNumber }, { transferTo: accountNumber }]
+        $or: [{ idUserSend: idUser }, { idUserReceive: idUser }]
     }, function (err, transactions) {
         if (err) {
-            console.log(err);
-            res.statusCode = 400;
-            res.json({
+            return res.json({
                 resp: null,
                 isError: true,
                 msg: null
             });
-        } else {
-
-            res.json({
+        }
+        if (transactions) {
+            // transactions.forEach(transaction => {
+            //     // transaction["nameUserSend"] = User.findById(transaction.idUserSend).name;
+            //     User.findById(transaction.idUserSend), function(err, user){
+            //         if(user)
+            //         console.log(user.name);
+            //         else 
+            //         console.log('đéo')
+            //     }
+            //     // transaction["nameUserReceive"] = User.findById(transaction.idUserReceive).name;
+            // });
+            return res.json({
                 resp: { transactions: transactions },
+                isError: false,
+                msg: null
+            });
+        } else {
+            return res.json({
+                resp: { transactions: '' },
                 isError: false,
                 msg: null
             });
         }
     })
+
 });
 
 router.post('/history-all', function (req, res) {
@@ -746,9 +797,6 @@ router.post('/edit-receiver', function (req, res) {
 
     })
 })
-
-
-
 
 
 module.exports = router;
