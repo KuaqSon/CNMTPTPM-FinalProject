@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { fetchRecipient, deleteRecipient, updateRecipient } from '../../actions/recipient';
 import { fetchUserData } from '../../actions/auth';
 import { connect } from 'react-redux';
-import { Header, Image, Table, Button, Icon, Dimmer, Loader } from 'semantic-ui-react';
+import { Header, Image, Form, Table, Button, Icon, Dimmer, Loader, Modal } from 'semantic-ui-react';
 
 class ListRecipients extends Component {
   constructor() {
@@ -12,8 +12,9 @@ class ListRecipients extends Component {
       loading: false,
       modalVisible: false,
       modalSuccessVisible: false,
+      identityName: '',
+      selectedName: '',
       selectedNumber: '',
-      selectedBalance: '',
       selectedId: ''
     };
   }
@@ -46,9 +47,54 @@ class ListRecipients extends Component {
     }).catch(err => console.log('false'))
   }
 
+  handleChange = (e, { name, value }) => this.setState({ [name]: value })
+  closeModal = () => this.setState({ modalVisible: false })
+  closeSuccess = () => this.setState({
+    modalSuccessVisible: false,
+    selectedName: '',
+    selectedNumber: '',
+    selectedId: ''
+  })
+
+  showEditModal = (id, recipientName, recipientNumber) => {
+    this.setState({
+      modalVisible: true,
+      selectedName: recipientName,
+      selectedNumber: recipientNumber,
+      selectedId: id,
+    })
+  }
+
+  submitEdit = () => {
+    const { selectedId, identityName } = this.state;
+
+    this.setState({
+      loading: true,
+      modalVisible: false,
+      modalSuccessVisible: true
+    })
+
+    this.props.updateRecipient({
+      name: identityName,
+      idReceiver: selectedId
+    })
+      .then(data => {
+        this.loadRecipient();
+        this.setState({
+          loading: false
+        })
+      })
+      .catch(error => {
+        this.setState({
+          loading: false
+        })
+        console.log("fail")
+      });
+  }
+
   render() {
     const { recipients, fetchRecipientsStatus } = this.props;
-    const { loading } = this.state;
+    const { loading, identityName, modalVisible, modalSuccessVisible, selectedName, selectedNumber, selectedId } = this.state;
     if (!fetchRecipientsStatus) {
       return (
         <Dimmer active inverted>
@@ -58,6 +104,70 @@ class ListRecipients extends Component {
     } else {
       return (
         <div>
+        <Dimmer active={loading} inverted page>
+          <Loader inverted content='Loading' />
+        </Dimmer>
+        <Modal
+            dimmer="blurring"
+            size="tiny"
+            open={modalVisible}
+            closeOnDimmerClick={false}
+            onClose={this.closeModal}
+          >
+            <Modal.Header>Edit recipient {selectedName}</Modal.Header>
+            <Modal.Content>
+              <p>Account number: <strong>{selectedNumber}</strong></p>
+            
+              <Form className="mt-2">
+                <Form.Input
+                  name='identityName'
+                  value={identityName}
+                  label='Type another identity name if you have'
+                  onChange={this.handleChange}
+                />
+              </Form>
+            </Modal.Content>
+            <Modal.Actions>
+              <Button onClick={this.closeModal} negative>
+                No
+            </Button>
+              <Button
+                onClick={() => this.submitEdit()}
+                positive
+                labelPosition='right'
+                icon='checkmark'
+                content='Yes'
+              />
+            </Modal.Actions>
+          </Modal>
+
+          <Modal
+            dimmer="blurring"
+            size="tiny"
+            open={modalSuccessVisible}
+            closeOnDimmerClick={false}
+            onClose={this.closeSuccess}
+          >
+            <Modal.Header>Success!</Modal.Header>
+            <Modal.Content>
+              {loading ?
+                <Dimmer active inverted>
+                  <Loader inverted content='Loading' inline='centered' />
+                </Dimmer>
+                :
+                <p>Editted identity name of payment <strong>{selectedNumber}</strong></p>
+              }
+            </Modal.Content>
+            <Modal.Actions>
+              <Button
+                onClick={() => this.closeSuccess()}
+                positive
+                labelPosition='right'
+                icon='checkmark'
+                content='Ok'
+              />
+            </Modal.Actions>
+          </Modal>
         <Dimmer active={loading} inverted page>
           <Loader inverted content='Loading' />
         </Dimmer>
@@ -84,7 +194,7 @@ class ListRecipients extends Component {
                   </Table.Cell>
                   <Table.Cell>{r.accountNumber}</Table.Cell>
                   <Table.Cell>
-                    <Button animated='fade' inverted color='green'>
+                    <Button animated='fade' inverted color='green' onClick={() => this.showEditModal(r._id, r.name, r.accountNumber)}>
                       <Button.Content visible>Edit</Button.Content>
                       <Button.Content hidden>
                         <Icon name='edit' />
