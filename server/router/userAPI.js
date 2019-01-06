@@ -501,21 +501,21 @@ router.post('/get-account', auth, function (req, res) {
   })
 })
 
-router.post('/history', auth, function (req, res) {
-  const accountNumber = req.body.accountNumber;
-  // console.log(idUser);
-  Transaction.find({
-    accountNumber: accountNumber
-  }, function (err, transactions) {
-    if (err) {
-      console.log(err);
-      res.statusCode = 400;
-      res.json({
-        resp: null,
-        isError: true,
-        msg: null
-      });
-    } else {
+router.post('/history', function (req, res) {
+    const accountNumber = req.body.accountNumber;
+    console.log(JSON.stringify(req.body));  
+    Transaction.find({
+        accountNumber: accountNumber
+    }, function (err, transactions) {
+        if (err) {
+            console.log(err);
+            res.statusCode = 400;
+            res.json({
+                resp: null,
+                isError: true,
+                msg: null
+            });
+        } else {
 
       res.json({
         resp: { transactions: transactions },
