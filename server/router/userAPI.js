@@ -10,8 +10,6 @@ const Account = require('../model/account');
 // var random = require('randomstring');
 const OTP = require('../config/authOTP').generateGmailOTP;
 const Receiver = require('../model/receiver')
-const verifyAccount = require('./verify').verifyAccount;
-
 
 var nodemailer = require('nodemailer');
 
@@ -629,8 +627,6 @@ router.post('/recivers', function (req, res) {
 // const findName = require('./verify').findName
 router.post('/add-receiver', function (req, res) {
     const idUser = req.body.idUser;
-    const idUserReceiver = req.body.idUserReceiver;
-    const name = req.body.name;
     const accountNumber = req.body.accountNumber;
     Receiver.findOne({ accountNumber: accountNumber }, function (err, account) {
         if (account)
