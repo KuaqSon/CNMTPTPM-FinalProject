@@ -34,11 +34,18 @@ class Login extends Component {
       password
     })
       .then(data => {
-        this.setState({
-          loading: false
-        });
-        console.log(data);
-        this.props.history.push("/dashboard");
+        const { isError } = data;
+        if(isError) {
+          this.setState({
+            loading: false,
+            error: true,
+          })
+        } else {
+          this.setState({
+            loading: false
+          });
+          this.props.history.push("/dashboard");
+        }
       })
       .catch(error => {
         this.setState({

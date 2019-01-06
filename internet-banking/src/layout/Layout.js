@@ -4,10 +4,12 @@ import TopMenu from '../components/Menu/TopMenu';
 import { Grid, Segment } from 'semantic-ui-react'
 import './Layout.css';
 import { connect } from 'react-redux';
-import { userData } from '../actions/auth';
+import { fetchUserData } from '../actions/auth';
 
 class Layout extends Component {
-
+  componentWillMount() {
+    this.props.fetchUserData();
+  }
   render() {
     const { user } = this.props;
     const {name} = user;
@@ -41,15 +43,13 @@ const mapStateToProps = (state) => {
   }
 }
 
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-    
-//   }
-// }
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchUserData: () => dispatch(fetchUserData())
+  }
+}
 
 export default connect(
   mapStateToProps,
-  // mapDispatchToProps
+  mapDispatchToProps
 )(Layout);
-
-// export default Layout;

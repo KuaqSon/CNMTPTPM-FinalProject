@@ -118,7 +118,7 @@ class SideMenu extends Component {
       // },
     ];
 
-    const USER = false;
+    const USER = true;
     const menus = USER ? userMenus : employeeMenus;
 
     return (

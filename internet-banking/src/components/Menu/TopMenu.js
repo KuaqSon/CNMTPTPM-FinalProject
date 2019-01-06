@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
 import { Menu } from 'semantic-ui-react';
 import { withRouter } from "react-router-dom";
+import { connect } from 'react-redux';
+import { logout } from '../../actions/auth';
 
 class TopMenu extends Component {
   state = {}
 
   handleItemClick = (e, { name }) => this.setState({ activeItem: name })
-
+  handleLogout = () => {
+    this.props.logout();
+    this.props.history.push("/");
+  }
   render() {
     const { activeItem } = this.state
 
@@ -38,7 +43,7 @@ class TopMenu extends Component {
         <Menu.Menu position='right'>
           <Menu.Item name={this.props.nameOfUser}>
           </Menu.Item>
-          <Menu.Item name='Logout' active={activeItem === 'Logout'} onClick={() => this.props.history.push("/")}>
+          <Menu.Item name='Logout' active={activeItem === 'Logout'} onClick={() => this.handleLogout()}>
             Logout
           </Menu.Item>
         </Menu.Menu>
@@ -47,5 +52,13 @@ class TopMenu extends Component {
   }
 }
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    logout: () => dispatch(logout())
+  }
+}
 
-export default withRouter(TopMenu);
+export default withRouter(connect(
+  null,
+  mapDispatchToProps
+)(TopMenu));

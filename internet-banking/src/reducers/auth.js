@@ -1,5 +1,5 @@
 import {
-  USER_DATA,
+  FETCH_USER_DATA,
   USER_LOGIN_STATUS,
   } from '../actions/auth';
   
@@ -10,7 +10,7 @@ import {
   
   const auth = (state = initialState, action) => {
     switch (action.type) {
-      case USER_DATA:
+      case FETCH_USER_DATA:
         return {
           ...state,
           data: action.data
