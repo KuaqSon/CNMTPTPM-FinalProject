@@ -9,9 +9,7 @@ const Transaction = require('../model/transaction');
 const Account = require('../model/account');
 // var random = require('randomstring');
 const OTP = require('../config/authOTP').generateGmailOTP;
-
-
-
+const Receiver = require('../model/receiver')
 
 var nodemailer = require('nodemailer');
 
@@ -174,23 +172,23 @@ router.post('/login', function (req, res) {
 
 
 router.post('/logout', function (req, res) {
-  rfToken.findOneAndDelete({ idUser: req.body.idUser }, function (err) {
-    if (err) {
-      console.log(err);
-      res.json({
-        resp: null,
-        isError: true,
-        msg: null
-      });
-    }
-    else {
-      res.json({
-        resp: null,
-        isError: false,
-        msg: 'success'
-      });
-    }
-  })
+    rfToken.findOneAndDelete({ idUser: req.body.idUser }, function (err) {
+        if (err) {
+            console.log(err);
+            res.json({
+                resp: null,
+                isError: true,
+                msg: null
+            });
+        }
+        else {
+            res.json({
+                resp: null,
+                isError: false,
+                msg: 'success'
+            });
+        }
+    })
 });
 
 router.post('/updateToken', function (req, res) {
@@ -503,9 +501,8 @@ router.post('/get-account', auth, function (req, res) {
 
 router.post('/history', function (req, res) {
     const accountNumber = req.body.accountNumber;
-    console.log(JSON.stringify(req.body));  
     Transaction.find({
-        accountNumber: accountNumber
+        $or: [{ accountNumber: accountNumber }, { transferTo: accountNumber }]
     }, function (err, transactions) {
         if (err) {
             console.log(err);
@@ -526,6 +523,7 @@ router.post('/history', function (req, res) {
   })
 });
 
+<<<<<<< HEAD
 router.post('/history-all', auth, function (req, res) {
   const idUser = req.body.idUser;
   // console.log(idUser);
@@ -548,6 +546,40 @@ router.post('/history-all', auth, function (req, res) {
       });
     }
   })
+=======
+router.post('/history-all', function (req, res) {
+    const idUser = req.body.idUser;
+    Account.find({ idUser: idUser }, function (err, accounts) {
+        if (err) {
+            return res.json({
+                resp: null,
+                isError: true,
+                msg: null
+            });
+        }
+        var transactions = [];
+        console.log(accounts);
+        accounts.forEach(element => {
+            Transaction.find({
+                $or: [{ accountNumber: element.accountNumber }, { transferTo: element.accountNumber }]
+            }, function (err, resultTransactions) {
+                if (err) {
+                    return res.json({
+                        resp: null,
+                        isError: true,
+                        msg: null
+                    });
+                }
+                transactions.push(resultTransactions);
+            })
+        });
+        res.json({
+            resp: transactions,
+            isError: false,
+            msg: null
+        })
+    })
+>>>>>>> f/history
 });
 
 // finding account that wanna to tranfer
@@ -598,5 +630,149 @@ router.post('/find-account', auth, function (req, res) {
     }
   })
 });
+
+router.post('/recivers', function (req, res) {
+    const idUser = req.body.idUser;
+    Receiver.find({ idUser: idUser }, function (err, receivers) {
+        if (err) {
+            return res.json({
+                resp: null,
+                isError: true,
+                msg: null
+            });
+        }
+        return res.json({
+            resp: { receivers: receivers },
+            isError: false,
+            msg: null
+        });
+    })
+})
+// const findName = require('./verify').findName
+router.post('/add-receiver', function (req, res) {
+    const idUser = req.body.idUser;
+    const accountNumber = req.body.accountNumber;
+    Receiver.findOne({ accountNumber: accountNumber }, function (err, account) {
+        if (account)
+            return res.json({
+                resp: null,
+                isError: false,
+                msg: 'account exited'
+            });
+        else {
+            Account.findOne({ accountNumber: accountNumber }, function (err, account) {
+                if (err)
+                    return res.json({
+                        resp: null,
+                        isError: true,
+                        msg: null
+                    });
+
+                if (account) {
+                    User.findOne({ _id: account.idUser }, function (err, user) {
+
+                        if (err)
+                            return res.json({
+                                resp: null,
+                                isError: true,
+                                msg: null
+                            });
+                        if (user) {
+                            var receiver = new Receiver({
+                                idUser: idUser,
+                                idUserReceiver: user._id,
+                                name: user.name,
+                                accountNumber: account.accountNumber
+                            });
+
+                            receiver.save(function (err) {
+                                if (err)
+                                    return res.json({
+                                        resp: null,
+                                        isError: true,
+                                        msg: null
+                                    });
+
+                                return res.json({
+                                    resp: { receiver: receiver },
+                                    isError: false,
+                                    msg: null
+                                })
+                            })
+
+                        } else {
+                            return res.json({
+                                resp: null,
+                                isError: false,
+                                msg: 'User not found'
+                            });
+                        }
+                    })
+                } else {
+                    return res.json({
+                        resp: null,
+                        isError: false,
+                        msg: 'Account not found'
+                    });
+                }
+            })
+        }
+    })
+})
+
+router.post('/delete-receiver', function (req, res) {
+    const idReceiver = req.body.idReceiver;
+    Receiver.findOneAndDelete(idReceiver, function (err) {
+        if (err) {
+            return res.json({
+                resp: null,
+                isError: true,
+                msg: null
+            });
+        }
+        return res.json({
+            resp: null,
+            isError: false,
+            msg: null
+        });
+    })
+})
+
+router.post('/edit-receiver', function (req, res) {
+    const name = req.body.name;
+    const idReceiver = req.body.idReceiver;
+    Receiver.findById(idReceiver, function (err, receiver) {
+        if (err) {
+            return res.json({
+                resp: null,
+                isError: true,
+                msg: null
+            });
+        }
+        if (receiver) {
+            receiver.name = name;
+            receiver.save(function (err) {
+                if (err)
+                    return res.json({
+                        resp: null,
+                        isError: true,
+                        msg: null
+                    });
+                return res.json({
+                    resp: { receiver: receiver },
+                    isError: false,
+                    msg: null
+                });
+
+            })
+
+        }
+
+    })
+})
+
+
+
+
 
 module.exports = router;
