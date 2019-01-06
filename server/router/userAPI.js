@@ -172,23 +172,23 @@ router.post('/login', function (req, res) {
 
 
 router.post('/logout', function (req, res) {
-    rfToken.findOneAndDelete({ idUser: req.body.idUser }, function (err) {
-        if (err) {
-            console.log(err);
-            res.json({
-                resp: null,
-                isError: true,
-                msg: null
-            });
-        }
-        else {
-            res.json({
-                resp: null,
-                isError: false,
-                msg: 'success'
-            });
-        }
-    })
+  rfToken.findOneAndDelete({ idUser: req.body.idUser }, function (err) {
+    if (err) {
+      console.log(err);
+      res.json({
+        resp: null,
+        isError: true,
+        msg: null
+      });
+    }
+    else {
+      res.json({
+        resp: null,
+        isError: false,
+        msg: 'success'
+      });
+    }
+  })
 });
 
 router.post('/updateToken', function (req, res) {
@@ -260,11 +260,13 @@ router.post('/updateToken', function (req, res) {
 });
 
 
-router.post('/add-transaction', OTP, function (req, res) {
+router.post('/add-transaction', function (req, res) {
   var accountNumber = req.body.accountNumber;
   var transferTo = req.body.transferTo;
   var transferMoney = req.body.transferMoney;
   var infor = req.body.infor;
+
+
   // var checkCapcha = req.body.checkCapcha;
   // Type transaction
   // = 1 create => user add money to themself
@@ -347,34 +349,61 @@ router.post('/add-transaction', OTP, function (req, res) {
                 })
 
                 // add Transaction
-                var transaction = new Transaction({
-                  accountNumber: accountNumber,
-                  transferTo: transferTo,
-                  transferMoney: transferMoney,
-                  infor: infor,
-                  create: Date.now()
-                })
-                transaction.save(function (err) {
-                  if (err) {
-                    console.log(err)
-                    res.json({
-                      resp: null,
-                      isError: true,
-                      msg: null
-                    });
-                    return;
-                  } else {
-                    res.json({
-                      resp: { transaction: transaction },
-                      isError: false,
-                      msg: null
-                    });
-                    return;
+                Account.findOne({ accountNumber: accountNumber }, function (err, account) {
+                  if (account) {
+                    var idUserSend = account.idUser;
+                    var idPaymentSend = account._id;
+                    User.findById(idUserSend, function (err, user) {
+                      if (user) {
+                        var nameUserSend = user.name;
+                        Account.findOne({ accountNumber: transferTo }, function (err, account) {
+                          if (account) {
+                            var idUserReceive = account.idUser;
+                            var idPaymentReceive = account._id;
+                            User.findOne({ _id: idUserReceive }, function (err, user) {
+                              if (user) {
+                                var nameUserReceive = user.name;
+                                var transaction = new Transaction({
+                                  accountNumber: accountNumber,
+                                  transferTo: transferTo,
+                                  transferMoney: transferMoney,
+                                  infor: infor,
+                                  idUserSend: idUserSend,
+                                  nameUserSend: nameUserSend,
+                                  idPaymentSend: idPaymentSend,
+                                  idUserReceive: idUserReceive,
+                                  idPaymentReceive: idPaymentReceive,
+                                  nameUserReceive: nameUserReceive,
+                                  created: moment().format()
+                                })
+                                transaction.save(function (err) {
+                                  if (err) {
+                                    console.log(err)
+                                    res.json({
+                                      resp: null,
+                                      isError: true,
+                                      msg: null
+                                    });
+                                    return;
+                                  } else {
+                                    console.log(transaction.create);
+                                    res.json({
+                                      resp: { transaction: transaction },
+                                      isError: false,
+                                      msg: null
+                                    });
+                                    return;
+                                  }
+                                })
+
+                              } else { console.log(err); return }
+                            })
+                          }
+                        })
+                      }
+                    })
                   }
                 })
-                // end add Transaction
-
-
               } else {
                 res.json({
                   resp: null,
@@ -389,8 +418,7 @@ router.post('/add-transaction', OTP, function (req, res) {
 
         }
       }
-    });
-
+    })
 
 
     // end of Transfer transaction
@@ -500,61 +528,78 @@ router.post('/get-account', auth, function (req, res) {
 })
 
 router.post('/history', function (req, res) {
-    const accountNumber = req.body.accountNumber;
-    Transaction.find({
-        $or: [{ accountNumber: accountNumber }, { transferTo: accountNumber }]
-    }, function (err, transactions) {
-        if (err) {
-            console.log(err);
-            res.statusCode = 400;
-            res.json({
-                resp: null,
-                isError: true,
-                msg: null
-            });
-        } else {
 
-      res.json({
+  const idUser = req.body.idUser;
+
+  Transaction.find({
+    $or: [{ idUserSend: idUser }, { idUserReceive: idUser }]
+  }, function (err, transactions) {
+    if (err) {
+      return res.json({
+        resp: null,
+        isError: true,
+        msg: null
+      });
+    }
+    if (transactions) {
+      // transactions.forEach(transaction => {
+      //     // transaction["nameUserSend"] = User.findById(transaction.idUserSend).name;
+      //     User.findById(transaction.idUserSend), function(err, user){
+      //         if(user)
+      //         console.log(user.name);
+      //         else 
+      //         console.log('đéo')
+      //     }
+      //     // transaction["nameUserReceive"] = User.findById(transaction.idUserReceive).name;
+      // });
+      return res.json({
         resp: { transactions: transactions },
+        isError: false,
+        msg: null
+      });
+    } else {
+      return res.json({
+        resp: { transactions: '' },
         isError: false,
         msg: null
       });
     }
   })
+
 });
 
 router.post('/history-all', function (req, res) {
-    const idUser = req.body.idUser;
-    Account.find({ idUser: idUser }, function (err, accounts) {
+  const idUser = req.body.idUser;
+  Account.find({ idUser: idUser }, function (err, accounts) {
+    if (err) {
+      return res.json({
+        resp: null,
+        isError: true,
+        msg: null
+      });
+    }
+    var transactions = [];
+    console.log(accounts);
+    accounts.forEach(element => {
+      Transaction.find({
+        $or: [{ accountNumber: element.accountNumber }, { transferTo: element.accountNumber }]
+      }, function (err, resultTransactions) {
         if (err) {
-            return res.json({
-                resp: null,
-                isError: true,
-                msg: null
-            });
-        }
-        var transactions = [];
-        console.log(accounts);
-        accounts.forEach(element => {
-            Transaction.find({
-                $or: [{ accountNumber: element.accountNumber }, { transferTo: element.accountNumber }]
-            }, function (err, resultTransactions) {
-                if (err) {
-                    return res.json({
-                        resp: null,
-                        isError: true,
-                        msg: null
-                    });
-                }
-                transactions.push(resultTransactions);
-            })
-        });
-        res.json({
-            resp: transactions,
-            isError: false,
+          return res.json({
+            resp: null,
+            isError: true,
             msg: null
-        })
+          });
+        }
+        transactions.push(resultTransactions);
+      })
+    });
+    res.json({
+      resp: transactions,
+      isError: false,
+      msg: null
     })
+  })
 });
 
 // finding account that wanna to tranfer
@@ -607,147 +652,144 @@ router.post('/find-account', auth, function (req, res) {
 });
 
 router.post('/recivers', function (req, res) {
-    const idUser = req.body.idUser;
-    Receiver.find({ idUser: idUser }, function (err, receivers) {
-        if (err) {
-            return res.json({
-                resp: null,
-                isError: true,
-                msg: null
-            });
-        }
-        return res.json({
-            resp: receivers,
-            isError: false,
-            msg: null
-        });
-    })
+  const idUser = req.body.idUser;
+  Receiver.find({ idUser: idUser }, function (err, receivers) {
+    if (err) {
+      return res.json({
+        resp: null,
+        isError: true,
+        msg: null
+      });
+    }
+    return res.json({
+      resp: { receivers: receivers },
+      isError: false,
+      msg: null
+    });
+  })
 })
 // const findName = require('./verify').findName
 router.post('/add-receiver', function (req, res) {
-    const idUser = req.body.idUser;
-    const accountNumber = req.body.accountNumber;
-    Receiver.findOne({ accountNumber: accountNumber }, function (err, account) {
-        if (account)
-            return res.json({
+  const idUser = req.body.idUser;
+  const accountNumber = req.body.accountNumber;
+  Receiver.findOne({ accountNumber: accountNumber }, function (err, account) {
+    if (account)
+      return res.json({
+        resp: null,
+        isError: false,
+        msg: 'account exited'
+      });
+    else {
+      Account.findOne({ accountNumber: accountNumber }, function (err, account) {
+        if (err)
+          return res.json({
+            resp: null,
+            isError: true,
+            msg: null
+          });
+
+        if (account) {
+          User.findOne({ _id: account.idUser }, function (err, user) {
+
+            if (err)
+              return res.json({
+                resp: null,
+                isError: true,
+                msg: null
+              });
+            if (user) {
+              var receiver = new Receiver({
+                idUser: idUser,
+                idUserReceiver: user._id,
+                name: user.name,
+                accountNumber: account.accountNumber
+              });
+
+              receiver.save(function (err) {
+                if (err)
+                  return res.json({
+                    resp: null,
+                    isError: true,
+                    msg: null
+                  });
+
+                return res.json({
+                  resp: { receiver: receiver },
+                  isError: false,
+                  msg: null
+                })
+              })
+
+            } else {
+              return res.json({
                 resp: null,
                 isError: false,
-                msg: 'account exited'
-            });
-        else {
-            Account.findOne({ accountNumber: accountNumber }, function (err, account) {
-                if (err)
-                    return res.json({
-                        resp: null,
-                        isError: true,
-                        msg: null
-                    });
-
-                if (account) {
-                    User.findOne({ _id: account.idUser }, function (err, user) {
-
-                        if (err)
-                            return res.json({
-                                resp: null,
-                                isError: true,
-                                msg: null
-                            });
-                        if (user) {
-                            var receiver = new Receiver({
-                                idUser: idUser,
-                                idUserReceiver: user._id,
-                                name: user.name,
-                                accountNumber: account.accountNumber
-                            });
-
-                            receiver.save(function (err) {
-                                if (err)
-                                    return res.json({
-                                        resp: null,
-                                        isError: true,
-                                        msg: null
-                                    });
-
-                                return res.json({
-                                    resp: { receiver: receiver },
-                                    isError: false,
-                                    msg: null
-                                })
-                            })
-
-                        } else {
-                            return res.json({
-                                resp: null,
-                                isError: false,
-                                msg: 'User not found'
-                            });
-                        }
-                    })
-                } else {
-                    return res.json({
-                        resp: null,
-                        isError: false,
-                        msg: 'Account not found'
-                    });
-                }
-            })
+                msg: 'User not found'
+              });
+            }
+          })
+        } else {
+          return res.json({
+            resp: null,
+            isError: false,
+            msg: 'Account not found'
+          });
         }
-    })
+      })
+    }
+  })
 })
 
 router.post('/delete-receiver', function (req, res) {
-    const idReceiver = req.body.idReceiver;
-    Receiver.findOneAndDelete(idReceiver, function (err) {
-        if (err) {
-            return res.json({
-                resp: null,
-                isError: true,
-                msg: null
-            });
-        }
-        return res.json({
-            resp: null,
-            isError: false,
-            msg: null
-        });
-    })
+  const idReceiver = req.body.idReceiver;
+  Receiver.findOneAndDelete(idReceiver, function (err) {
+    if (err) {
+      return res.json({
+        resp: null,
+        isError: true,
+        msg: null
+      });
+    }
+    return res.json({
+      resp: null,
+      isError: false,
+      msg: null
+    });
+  })
 })
 
 router.post('/edit-receiver', function (req, res) {
-    const name = req.body.name;
-    const idReceiver = req.body.idReceiver;
-    Receiver.findById(idReceiver, function (err, receiver) {
-        if (err) {
-            return res.json({
-                resp: null,
-                isError: true,
-                msg: null
-            });
-        }
-        if (receiver) {
-            receiver.name = name;
-            receiver.save(function (err) {
-                if (err)
-                    return res.json({
-                        resp: null,
-                        isError: true,
-                        msg: null
-                    });
-                return res.json({
-                    resp: { receiver: receiver },
-                    isError: false,
-                    msg: null
-                });
+  const name = req.body.name;
+  const idReceiver = req.body.idReceiver;
+  Receiver.findById(idReceiver, function (err, receiver) {
+    if (err) {
+      return res.json({
+        resp: null,
+        isError: true,
+        msg: null
+      });
+    }
+    if (receiver) {
+      receiver.name = name;
+      receiver.save(function (err) {
+        if (err)
+          return res.json({
+            resp: null,
+            isError: true,
+            msg: null
+          });
+        return res.json({
+          resp: { receiver: receiver },
+          isError: false,
+          msg: null
+        });
 
-            })
+      })
 
-        }
+    }
 
-    })
+  })
 })
-
-
-
 
 
 module.exports = router;
