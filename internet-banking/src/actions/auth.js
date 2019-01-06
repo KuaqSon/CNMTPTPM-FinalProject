@@ -29,18 +29,31 @@ export function login(data) {
   });
 }
 
-export function logout() {
-  return function (dispatch) {
-    localStorage.setItem('userData', null);
+export function logout(data) {
+  const userData = localStorage.getItem('userData');
+  if (userData) {
+    const {_id} = userData;
+    return function (dispatch) {
+      axios(`http://localhost:3000/user/logout`, {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+          idUser: _id
+        }
+      })
+      localStorage.setItem('userData', null);
+      localStorage.setItem('acceptToken', '');
+      localStorage.setItem('rfToken', '');
+    }
   }
 }
 
 function setUserData(data) {
   console.log(data);
-  const {user} = data;
+  const {user, acceptToken, rfToken} = data;
   localStorage.setItem('userData',  JSON.stringify(user));
-  console.log(localStorage.getItem('userData'));
-  console.log(JSON.parse(localStorage.getItem('userData')));
+  localStorage.setItem('acceptToken', acceptToken);
+  localStorage.setItem('rfToken', rfToken);
 }
 
 export function fetchUserData() {

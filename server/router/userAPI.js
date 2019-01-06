@@ -174,7 +174,7 @@ router.post('/login', function (req, res) {
 
 
 router.post('/logout', function (req, res) {
-  rfToken.findOneAndDelete({ userId: req.body.userId }, function (err) {
+  rfToken.findOneAndDelete({ idUser: req.body.idUser }, function (err) {
     if (err) {
       console.log(err);
       res.json({
