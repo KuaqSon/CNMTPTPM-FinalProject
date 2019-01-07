@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
-import { Button, Icon, Form, Input, Radio, Select, TextArea, Segment } from 'semantic-ui-react';
+import { Button, Icon, Form, Input, Radio, Select, Message, Segment } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { setTransactionInfo } from '../../actions/transaction';
 
 class TransactionInfor extends Component {
-  state = { name: '', amount: '', message: '', password: '', phone: '', loading: false }
+  state = { name: '', amount: '', message: '', password: '', phone: '', loading: false, isSubmit: false }
   handleChange = (e, { name, value }) => this.setState({ [name]: value })
  
   handleSubmit () {
     const {amount, message } = this.state;
     this.setState({
-      loading: true
+      loading: true,
+      isSubmit: true
     })
 
     this.props.setTransactionInfo({
@@ -21,7 +22,7 @@ class TransactionInfor extends Component {
   }
 
   render() {
-    const { amount, message } = this.state
+    const { amount, message, isSubmit } = this.state
     return (
       <Segment>
         <div className="mt-2">
@@ -41,14 +42,15 @@ class TransactionInfor extends Component {
                 placeholder='Enter username'
                 onChange={this.handleChange}
               />
-              <Button animated='fade' onClick={() => this.handleSubmit()}>
+              {!isSubmit && <Button animated='fade' onClick={() => this.handleSubmit()}>
               <Button.Content visible>Submit</Button.Content>
               <Button.Content hidden>
                 <Icon name='check' />
               </Button.Content>
-            </Button>
+            </Button>}
           </Form>
         </div>
+        {isSubmit && <Message color="green">Submitted transaction info, please go next to choose who is the person pay the transaction fee</Message>}
       </Segment>
     )
   }

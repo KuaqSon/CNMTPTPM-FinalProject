@@ -1,19 +1,24 @@
 import React, { Component } from 'react';
-import { Button, Icon, Card, Input, Radio, Select, Message, Segment, Grid, Header } from 'semantic-ui-react';
+import { Button, Icon, Card, Input, Radio, Select, Message, Segment, Header } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { callOTP } from '../../actions/transaction';
 
 class TransactionConfirm extends Component {
-  state = {}
+  state = {isSubmit: false}
 
-  submitToOTP = (idUser) => {
+  submitToOTP = (idUser, sendCardNumber) => {
     this.props.callOTP({
-      idUser: idUser
+      idUser: idUser,
+      accountNumber: sendCardNumber
+    })
+    this.setState({
+      isSubmit: true
     })
   }
 
   render() {
     const { idUser, sendCardNumber, recipientCardNumber, amount, message, isPayer} = this.props;
+    const { isSubmit } = this.state;
     console.log(idUser);
     return (
       <div>
@@ -27,12 +32,14 @@ class TransactionConfirm extends Component {
           <div>Who is pay fee of transaction: <strong>{isPayer ? "Payer" : "Payee"}</strong></div>
         </div>
       </Segment>
-        <Button animated='fade' color="google plus" size='big' onClick={() => this.submitToOTP(idUser)}>
+        {!isSubmit && <Button animated='fade' color="google plus" size='big' onClick={() => this.submitToOTP(idUser, sendCardNumber)}>
           <Button.Content visible>Submit</Button.Content>
           <Button.Content hidden>
             <Icon name='arrow right' />
           </Button.Content>
-        </Button>
+        </Button>}
+
+        {isSubmit && <Message color="green">Submitted transaction, please go next to verification the OTP code</Message>}
       </div>
     )
   }

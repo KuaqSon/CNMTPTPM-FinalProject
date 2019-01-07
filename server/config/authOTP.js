@@ -57,10 +57,12 @@ exports.generateGmailOTP = (req, res, next) => {
 }
 
 exports.verifyAccessOTP = (req, res, next) => {
+    const {data} = req.body;
+    const {OTP, idUser, accountNumber} = data;
     authOTP.findOne({
-        idUser: req.body.idUser,
-        accountNumber: req.body.accountNumber,
-        OTP: req.body.OTP
+        // idUser: idUser,
+        // accountNumber: accountNumber,
+        OTP: OTP
     }, function (err, user) {
         if (err) return res.json({ msg: 'err' })
         if (user) {

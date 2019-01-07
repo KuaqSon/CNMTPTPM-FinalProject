@@ -291,17 +291,26 @@ router.post('/updateToken', function (req, res) {
 
 
 router.post('/add-transaction',OTP, function (req, res) {
-    var accountNumber = req.body.accountNumber;
-    var transferTo = req.body.transferTo;
-    var transferMoney = req.body.transferMoney;
-    var infor = req.body.infor;
+    // var accountNumber = req.body.accountNumber;
+    // var transferTo = req.body.transferTo;
+    // var transferMoney = req.body.transferMoney;
+    // var infor = req.body.infor;
+    // var type = req.body.type;
 
+    const {data} = req.body;
+    const {
+        accountNumber,
+        transferTo,
+        transferMoney,
+        infor,
+        type
+    } = data;
 
+    // console.log("user data ", req.body);
     // var checkCapcha = req.body.checkCapcha;
     // Type transaction
     // = 1 create => user add money to themself
     // = 2 tranfer => user move money to somebody
-    var type = req.body.type;
 
     const self = this;
     if (type == 2) {

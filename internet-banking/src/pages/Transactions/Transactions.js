@@ -36,7 +36,7 @@ class Transactions extends React.Component {
 
   gotoNextStep = () => {
     const next = this.state.currentStep + 1;
-    if(next > 5) {
+    if(next > 6) {
       return;
     }
     this.setState({
@@ -94,7 +94,14 @@ class Transactions extends React.Component {
             isPayer={payer}
           />}
           { currentStep === 6 &&
-          <TransactionOTP />}
+          <TransactionOTP 
+            idUser={_id}
+            sendCardNumber={sendCard.cardNumber}
+            recipientCardNumber={recipientCard.cardNumber}
+            amount={infor.amount}
+            message={infor.message}
+            isPayer={payer}
+          />}
         </div>
         <div className="mt-3">
               { currentStep > 1 && 
