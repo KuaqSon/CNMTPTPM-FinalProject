@@ -13,14 +13,16 @@ class Layout extends Component {
   render() {
     const { user } = this.props;
     const {name} = user;
+    const {isEmployee} = user;
+    console.log(isEmployee);
     console.log(user);
     return (
       <div className="grid">
-        <TopMenu nameOfUser={name}/>
+        <TopMenu nameOfUser={name} />
         <Grid className="p-1" divided>
           <Grid.Row>
             <Grid.Column className="dash-left">
-              <SideMenu />
+              <SideMenu isEmployee={isEmployee}/>
             </Grid.Column>
 
             <Grid.Column stretched className="dash-right">

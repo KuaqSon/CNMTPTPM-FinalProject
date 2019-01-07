@@ -105,6 +105,12 @@ class SideMenu extends Component {
 
     const employeeMenus = [
       {
+        key: 'dashboard',
+        name: 'dashboard',
+        icon: 'inbox',
+        link: '/dashboard'
+      },
+      {
         key: 'clients',
         name: 'Clients',
         icon: 'users',
@@ -118,7 +124,9 @@ class SideMenu extends Component {
       // },
     ];
 
-    const USER = true;
+    const { isEmployee } = this.props;
+
+    const USER = !isEmployee;
     const menus = USER ? userMenus : employeeMenus;
 
     return (
