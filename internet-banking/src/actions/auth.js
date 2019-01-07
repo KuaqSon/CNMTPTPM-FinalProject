@@ -7,7 +7,7 @@ export function login(data) {
   return (dispatch) => new Promise((resolve, reject) => {
     axios(`http://localhost:3000/user/login`, {
       method: 'post',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', },
       data: {
         ...data
       }

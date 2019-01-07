@@ -82,7 +82,7 @@ router.post('/rftokens', function (req, res) {
 })
 
 
-router.post('/active-account', function (req, res) {
+router.post('/active-account',auth, function (req, res) {
     var idPayment = req.body.idPayment;
     // var isActive = req.body.isActive;
     Account.findOne({
@@ -567,7 +567,7 @@ router.post('/get-account', auth, function (req, res) {
     })
 })
 
-router.post('/history', function (req, res) {
+router.post('/history',auth, function (req, res) {
     const idUser = req.body.idUser;
     const start = moment().subtract(30, 'days').format();
     const end = moment().format();
@@ -606,7 +606,7 @@ router.post('/history', function (req, res) {
 
 });
 
-router.post('/history-all', function (req, res) {
+router.post('/history-all',auth, function (req, res) {
     const idUser = req.body.idUser;
     Account.find({ idUser: idUser }, function (err, accounts) {
         if (err) {
@@ -642,7 +642,7 @@ router.post('/history-all', function (req, res) {
 
 // finding account that wanna to tranfer
 
-router.post('/find-account', function (req, res) {
+router.post('/find-account',auth, function (req, res) {
 
     const accountNumber = req.body.accountNumber;
 
@@ -694,7 +694,7 @@ router.post('/find-account', function (req, res) {
 
 
 
-router.post('/recivers', function (req, res) {
+router.post('/recivers',auth, function (req, res) {
     const idUser = req.body.idUser;
     Receiver.find({ idUser: idUser }, function (err, receivers) {
         if (err) {
@@ -716,7 +716,7 @@ router.post('/recivers', function (req, res) {
 })
 
 
-router.post('/add-receiver', function (req, res) {
+router.post('/add-receiver',auth, function (req, res) {
     const idUser = req.body.idUser;
     const accountNumber = req.body.accountNumber;
     Receiver.findOne({ accountNumber: accountNumber }, function (err, account) {
@@ -787,7 +787,7 @@ router.post('/add-receiver', function (req, res) {
     })
 })
 
-router.post('/delete-receiver', function (req, res) {
+router.post('/delete-receiver', auth,function (req, res) {
     const idReceiver = req.body.idReceiver;
     Receiver.findOneAndDelete(idReceiver, function (err) {
         if (err) {
@@ -805,7 +805,7 @@ router.post('/delete-receiver', function (req, res) {
     })
 })
 
-router.post('/edit-receiver', function (req, res) {
+router.post('/edit-receiver',auth, function (req, res) {
     const name = req.body.name;
     const idReceiver = req.body.idReceiver;
     Receiver.findById(idReceiver, function (err, receiver) {

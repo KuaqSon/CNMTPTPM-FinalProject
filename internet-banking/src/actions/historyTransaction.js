@@ -19,7 +19,8 @@ export function fetchHistory(data) {
 
         axios(`http://localhost:3000/user/history`, {
             method: 'post',
-            headers: h,
+            headers: { 'Content-Type': 'application/json',
+              'x-access-token': session.token },
             data: {
                 ...data
             }

@@ -22,7 +22,8 @@ export function fetchRecipient(data) {
 
     axios(`http://localhost:3000/user/recivers`, {
       method: 'post',
-      headers: h,
+      headers: { 'Content-Type': 'application/json',
+              'x-access-token': session.token },
       data: {
         ...data
       }
@@ -65,7 +66,8 @@ export function addRecipient(data) {
 
     axios(`http://localhost:3000/user/add-receiver`, {
       method: 'post',
-      headers: h,
+      headers: { 'Content-Type': 'application/json',
+              'x-access-token': session.token },
       data: {
         ...data
       }
@@ -95,7 +97,8 @@ export function deleteRecipient(data) {
   return (dispatch) => new Promise((resolve, reject) => {
     axios(`http://localhost:3000/user/delete-receiver`, {
       method: 'post',
-      headers: h,
+      headers: { 'Content-Type': 'application/json',
+              'x-access-token': session.token },
       data: {
         ...data
       }
@@ -125,7 +128,8 @@ export function updateRecipient(data) {
 
     axios(`http://localhost:3000/user/edit-receiver`, {
       method: 'post',
-      headers: h,
+      headers: { 'Content-Type': 'application/json',
+      'x-access-token': session.token },
       data: {
         ...data
       }

@@ -3,12 +3,13 @@ var User = require('../model/user');
 var router = express.Router();
 var bcrypt = require('bcrypt');
 // var passport = require('passport');
-// var authToken = require('../config/token');
+var authToken = require('../config/token');
 // const rfToken = require('../model/refreshToken');
 const moment = require('moment')
 // const User = require('../model/user');
 const randomString = require('randomstring');
 const Account = require('../model/account');
+var auth = authToken.verifyAccessToken;
 
 router.get('', function (req, res) {
     User.find(function (err, users) {
@@ -45,14 +46,14 @@ router.post('/accounts', function (req, res) {
     })
 })
 
-router.post('/add-user', function (req, res) {
+router.post('/add-user', auth, function (req, res) {
     var name = req.body.name;
     // var accountNumber = req.body.accountNumber;
     var username = req.body.username;
     var password = req.body.password;
     var email = req.body.email;
     var phoneNumber = req.body.phoneNumber;
-
+    console.log("name  "+ name);
 
     User.findOne({
         username: username

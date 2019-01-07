@@ -50,8 +50,9 @@ export function addClient(data) {
       refreshToken: localStorage.getItem('refreshToken'),
       token: localStorage.getItem('x-access-token')
     }
+    console.log(session);
     var h = new Headers();
-    h.append('Content-Type', 'application/json');
+    // h.append('Content-Type', 'application/json');
     if (session.refreshToken && session.token) {
       h.append('x-access-token', session.token);
       // h.append('email', session.email);
@@ -59,7 +60,8 @@ export function addClient(data) {
 
     axios(`http://localhost:3000/employee/add-user`, {
       method: 'post',
-      headers: h,
+      headers: { 'Content-Type': 'application/json',
+              'x-access-token': session.token },
       data: {
         ...data
       }

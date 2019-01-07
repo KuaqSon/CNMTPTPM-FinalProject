@@ -8,10 +8,17 @@ export const GET_PAYMENT = "GET_PAYMENT";
 export const NEGATIVE_PAYMENT = "NEGATIVE_PAYMENT";
 
 export function addPayment(data) {
+  const session = {
+    refreshToken: localStorage.getItem('refreshToken'),
+    token: localStorage.getItem('x-access-token')
+  }
   return (dispatch) => new Promise((resolve, reject) => {
     axios(`http://localhost:3000/employee/add-account`, {
       method: 'post',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': session.token
+      },
       data: {
         ...data
       }
@@ -31,9 +38,17 @@ export function addPayment(data) {
 
 export function fetchPayment(data) {
   return function (dispatch) {
+
+    const session = {
+      refreshToken: localStorage.getItem('refreshToken'),
+      token: localStorage.getItem('x-access-token')
+    }
     axios(`http://localhost:3000/employee/accounts`, {
       method: 'post',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': session.token
+      },
       data: {
         ...data
       }
@@ -77,7 +92,10 @@ export function rechargePayment(data) {
 
     axios(`http://localhost:3000/employee/recharge-payment`, {
       method: 'post',
-      headers: h,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': session.token
+      },
       data: {
         ...data
       }
@@ -112,7 +130,10 @@ export function getPayment(data) {
 
     axios(`http://localhost:3000/user/find-account`, {
       method: 'post',
-      headers: h,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': session.token
+      },
       data: {
         ...data
       }
@@ -128,7 +149,7 @@ export function getPayment(data) {
 }
 
 export function negativePayment(data) {
-  return (dispatch) => new Promise((resolve, reject)=>{
+  return (dispatch) => new Promise((resolve, reject) => {
 
     const session = {
       refreshToken: localStorage.getItem('refreshToken'),
@@ -143,17 +164,20 @@ export function negativePayment(data) {
 
     axios(`http://localhost:3000/user/active-account`, {
       method: 'post',
-      headers: h,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': session.token
+      },
       data: {
         ...data
       }
     })
-    .then(res => res.data)
-    .then(data => {
-      console.log(data);
-      dispatch({type: NEGATIVE_PAYMENT, data: data});
-      resolve(data);
-    })
-    .catch(error => reject(error));
+      .then(res => res.data)
+      .then(data => {
+        console.log(data);
+        dispatch({ type: NEGATIVE_PAYMENT, data: data });
+        resolve(data);
+      })
+      .catch(error => reject(error));
   })
 }

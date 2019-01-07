@@ -10,7 +10,7 @@ var refreshToken = require('../model/refreshToken');
 // var User = require('../dbQuery/getUsers');
 
 const SECRETKEY = 'DOUBLESON';
-const AC_LIFETIME = 600;
+const AC_LIFETIME = 6000;
 
 exports.generateAccessToken = userEntity => {
     var payload = {
@@ -26,13 +26,13 @@ exports.generateAccessToken = userEntity => {
     // 
     var token = jwt.sign(payload, SECRETKEY, {
         expiresIn: AC_LIFETIME
-    });
+    }); 
     return token;
 }
 
 exports.verifyAccessToken = (req, res, next) => {
     var token = req.headers['x-access-token'];
-    // console.log(token);
+    console.log(req);
     if (token) {
 
         jwt.verify(token, SECRETKEY, (err, payload) => {

@@ -47,7 +47,8 @@ export function callOTP(data) {
 
         axios.post(`http://localhost:3000/user/gmail`, {
             method: 'post',
-            headers: h,
+            headers: { 'Content-Type': 'application/json',
+              'x-access-token': session.token },
             data: {
                 ...data
             }
@@ -77,7 +78,8 @@ export function submitData(data) {
 
         axios.post(`http://localhost:3000/user/add-transaction`, {
             method: 'post',
-            headers: h,
+            headers: { 'Content-Type': 'application/json',
+              'x-access-token': session.token },
             data: {
                 ...data
             }

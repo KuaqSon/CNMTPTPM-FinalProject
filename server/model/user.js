@@ -12,6 +12,10 @@ var UserSchema = mongoose.Schema({
         type: String,
         required: false
     },
+    isEmployee:{
+        type: Boolean,
+        default: false
+    },
     password: {
         type: String,
         required: false
