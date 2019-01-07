@@ -63,9 +63,21 @@ export function fetchPaymentStatus(status) {
 
 export function rechargePayment(data) {
   return (dispatch) => new Promise((resolve, reject) => {
+
+    const session = {
+      refreshToken: localStorage.getItem('refreshToken'),
+      token: localStorage.getItem('x-access-token')
+    }
+    var h = new Headers();
+    h.append('Content-Type', 'application/json');
+    if (session.refreshToken && session.token) {
+      h.append('x-access-token', session.token);
+      // h.append('email', session.email);
+    };
+
     axios(`http://localhost:3000/employee/recharge-payment`, {
       method: 'post',
-      headers: { 'Content-Type': 'application/json' },
+      headers: h,
       data: {
         ...data
       }
@@ -85,9 +97,22 @@ export function rechargePayment(data) {
 
 export function getPayment(data) {
   return (dispatch) => new Promise((resolve, reject) => {
+
+    const session = {
+      refreshToken: localStorage.getItem('refreshToken'),
+      token: localStorage.getItem('x-access-token')
+    }
+    var h = new Headers();
+    h.append('Content-Type', 'application/json');
+    if (session.refreshToken && session.token) {
+      h.append('x-access-token', session.token);
+      // h.append('email', session.email);
+    };
+
+
     axios(`http://localhost:3000/user/find-account`, {
       method: 'post',
-      headers: { 'Content-Type': 'application/json' },
+      headers: h,
       data: {
         ...data
       }
@@ -104,9 +129,21 @@ export function getPayment(data) {
 
 export function negativePayment(data) {
   return (dispatch) => new Promise((resolve, reject)=>{
+
+    const session = {
+      refreshToken: localStorage.getItem('refreshToken'),
+      token: localStorage.getItem('x-access-token')
+    }
+    var h = new Headers();
+    h.append('Content-Type', 'application/json');
+    if (session.refreshToken && session.token) {
+      h.append('x-access-token', session.token);
+      // h.append('email', session.email);
+    };
+
     axios(`http://localhost:3000/user/active-account`, {
       method: 'post',
-      headers: { 'Content-Type': 'application/json' },
+      headers: h,
       data: {
         ...data
       }

@@ -8,9 +8,21 @@ export const EDIT_RECIPIENT = "EDIT_RECIPIENT";
 
 export function fetchRecipient(data) {
   return function (dispatch) {
+
+    const session = {
+      refreshToken: localStorage.getItem('refreshToken'),
+      token: localStorage.getItem('x-access-token')
+    }
+    var h = new Headers();
+    h.append('Content-Type', 'application/json');
+    if (session.refreshToken && session.token) {
+      h.append('x-access-token', session.token);
+      // h.append('email', session.email);
+    };
+
     axios(`http://localhost:3000/user/recivers`, {
       method: 'post',
-      headers: { 'Content-Type': 'application/json' },
+      headers: h,
       data: {
         ...data
       }
@@ -39,9 +51,21 @@ export function fetchRecipientStatus(status) {
 
 export function addRecipient(data) {
   return (dispatch) => new Promise((resolve, reject) => {
+
+    const session = {
+      refreshToken: localStorage.getItem('refreshToken'),
+      token: localStorage.getItem('x-access-token')
+    }
+    var h = new Headers();
+    h.append('Content-Type', 'application/json');
+    if (session.refreshToken && session.token) {
+      h.append('x-access-token', session.token);
+      // h.append('email', session.email);
+    };
+
     axios(`http://localhost:3000/user/add-receiver`, {
       method: 'post',
-      headers: { 'Content-Type': 'application/json' },
+      headers: h,
       data: {
         ...data
       }
@@ -56,10 +80,22 @@ export function addRecipient(data) {
 }
 
 export function deleteRecipient(data) {
+
+  const session = {
+    refreshToken: localStorage.getItem('refreshToken'),
+    token: localStorage.getItem('x-access-token')
+  }
+  var h = new Headers();
+  h.append('Content-Type', 'application/json');
+  if (session.refreshToken && session.token) {
+    h.append('x-access-token', session.token);
+    // h.append('email', session.email);
+  };
+
   return (dispatch) => new Promise((resolve, reject) => {
     axios(`http://localhost:3000/user/delete-receiver`, {
       method: 'post',
-      headers: { 'Content-Type': 'application/json' },
+      headers: h,
       data: {
         ...data
       }
@@ -75,9 +111,21 @@ export function deleteRecipient(data) {
 
 export function updateRecipient(data) {
   return (dispatch) => new Promise((resolve, reject) => {
+
+    const session = {
+      refreshToken: localStorage.getItem('refreshToken'),
+      token: localStorage.getItem('x-access-token')
+    }
+    var h = new Headers();
+    h.append('Content-Type', 'application/json');
+    if (session.refreshToken && session.token) {
+      h.append('x-access-token', session.token);
+      // h.append('email', session.email);
+    };
+
     axios(`http://localhost:3000/user/edit-receiver`, {
       method: 'post',
-      headers: { 'Content-Type': 'application/json' },
+      headers: h,
       data: {
         ...data
       }

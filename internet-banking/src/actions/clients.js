@@ -6,7 +6,20 @@ export const ADD_CLIENT = "ADD_CLIENT";
 
 export function fetchClients() {
   return function (dispatch) {
-    axios.get('http://localhost:3000/employee/user')
+    const session = {
+      refreshToken: localStorage.getItem('refreshToken'),
+      token: localStorage.getItem('x-access-token')
+    }
+    var h = new Headers();
+    h.append('Content-Type', 'application/json');
+    if (session.refreshToken && session.token) {
+      h.append('x-access-token', session.token);
+      // h.append('email', session.email);
+    };
+
+    axios.get('http://localhost:3000/employee/user',{
+      headers: h,
+    })
       .then(res => res.data)
       .then(data => {
         const { resp, isError, msg } = data;
@@ -32,9 +45,21 @@ export function fetchClientsStatus(status) {
 
 export function addClient(data) {
   return (dispatch) => new Promise((resolve, reject) => {
+
+    const session = {
+      refreshToken: localStorage.getItem('refreshToken'),
+      token: localStorage.getItem('x-access-token')
+    }
+    var h = new Headers();
+    h.append('Content-Type', 'application/json');
+    if (session.refreshToken && session.token) {
+      h.append('x-access-token', session.token);
+      // h.append('email', session.email);
+    };
+
     axios(`http://localhost:3000/employee/add-user`, {
       method: 'post',
-      headers: { 'Content-Type': 'application/json' },
+      headers: h,
       data: {
         ...data
       }

@@ -32,9 +32,21 @@ export function setTransactionPayer(data) {
 
 export function callOTP(data) {
     return function (dispatch) {
+
+        const session = {
+            refreshToken: localStorage.getItem('refreshToken'),
+            token: localStorage.getItem('x-access-token')
+          }
+          var h = new Headers();
+          h.append('Content-Type', 'application/json');
+          if (session.refreshToken && session.token) {
+            h.append('x-access-token', session.token);
+            // h.append('email', session.email);
+          };
+
         axios.post(`http://localhost:3000/user/gmail`, {
             method: 'post',
-            headers: { 'Content-Type': 'application/json' },
+            headers: h,
             data: {
                 ...data
             }

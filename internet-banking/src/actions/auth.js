@@ -42,8 +42,8 @@ export function logout(data) {
         }
       })
       localStorage.setItem('userData', null);
-      localStorage.setItem('acceptToken', '');
-      localStorage.setItem('rfToken', '');
+      localStorage.setItem('x-access-token', '');
+      localStorage.setItem('refreshToken', '');
     }
   }
 }
@@ -52,8 +52,8 @@ function setUserData(data) {
   console.log(data);
   const { user, acceptToken, rfToken } = data;
   localStorage.setItem('userData', JSON.stringify(user));
-  localStorage.setItem('acceptToken', acceptToken);
-  localStorage.setItem('rfToken', rfToken);
+  localStorage.setItem('x-access-token', acceptToken);
+  localStorage.setItem('refreshToken', rfToken);
 }
 
 export function fetchUserData() {

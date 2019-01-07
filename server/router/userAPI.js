@@ -71,8 +71,8 @@ console.log(req.body);
 
 var auth = authToken.verifyAccessToken;
 
-router.get('/rftokens', function (req, res) {
-    rfToken.find(function (err, rftokens) {
+router.post('/rftokens', function (req, res) {
+    rfToken.findOne({idUser: req.body.idUser}, function (err, rftokens) {
         res.json({
             resp: rftokens,
             isError: false,
