@@ -78,7 +78,13 @@ class Transactions extends React.Component {
           { currentStep === 4 &&
           <TransactionPayer />}
           { currentStep === 5 &&
-          <TransactionConfirm />}
+          <TransactionConfirm 
+            sendCardNumber={sendCard.cardNumber}
+            recipientCardNumber={recipientCard.cardNumber}
+            amount={infor.amount}
+            message={infor.message}
+            isPayer={payer}
+          />}
           { currentStep === 6 &&
           <TransactionOTP />}
         </div>
