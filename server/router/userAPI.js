@@ -7,15 +7,20 @@ const rfToken = require('../model/refreshToken');
 const moment = require('moment');
 const Transaction = require('../model/transaction');
 const Account = require('../model/account');
-// var random = require('randomstring');
+var randomString = require('randomstring');
 const OTP = require('../config/authOTP').verifyAccessOTP;
 const Receiver = require('../model/receiver')
+const authOTP = require('../model/authOTP');
 
 var nodemailer = require('nodemailer');
 
 router.post('/gmail', function (req, res) {
+console.log(req.body);
+    const {data} = req.body;
+    const {idUser} = data;
+    console.log(idUser);
 
-    const idUser = req.body.idUser;
+    // const idUser = req.body.idUser;
     User.findOne({ _id: idUser }, function (err, user) {
         if (err) {
             return res.json({
@@ -31,8 +36,8 @@ router.post('/gmail', function (req, res) {
                 var transporter = nodemailer.createTransport({
                     service: 'gmail',
                     auth: {
-                        user: process.env.Email,
-                        pass: process.env.PassGmail
+                        user: 'duongttson@gmail.com',
+                        pass: 'Biutoghe2003'
                     }
                 });
                 var mailOptions = {
@@ -40,7 +45,7 @@ router.post('/gmail', function (req, res) {
 
                     to: user.email,
                     subject: 'Xác nhận giao dịch của bạn',
-                    text: 'Mã OTP giao dịch của bạn là: ' + OTP
+                    text: 'Xin chào ' + user.name  + ' \nTin nhắn được gửi tới Email của bạn là: ' + user.email + '\nMã OTP giao dịch của bạn là: ' + OTP + '\nVui lòng nhập mã này vào khu vực xác nhận giao dịch của bạn \nCảm ơn bạn đã sử dụng dụng vụ!'
                 };
                 const authUser = new authOTP({
                     idUser: idUser,

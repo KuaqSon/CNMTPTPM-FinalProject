@@ -10,7 +10,7 @@ var OTPSchema = mongoose.Schema({
     },
     accountNumber: {
         type: Number,
-        required: true
+        required: false
     },
     OTP: {
         type: String,

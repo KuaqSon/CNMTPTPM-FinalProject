@@ -13,6 +13,8 @@ import TransactionPayer from '../../components/Transactions/TransactionPayer';
 import TransactionConfirm from '../../components/Transactions/TransactionConfirm';
 import TransactionOTP from '../../components/Transactions/TransactionOTP';
 import { connect } from 'react-redux';
+import { fetchUserData } from '../../actions/auth';
+
 
 class Transactions extends React.Component {
   constructor() {
@@ -26,6 +28,10 @@ class Transactions extends React.Component {
       selectedClient: '',
       selectedId: ''
     };
+  }
+
+  componentDidMount() {
+    this.props.fetchUserData();
   }
 
   gotoNextStep = () => {
@@ -50,7 +56,8 @@ class Transactions extends React.Component {
 
   render() {
     const { currentStep } = this.state;
-    const { sendCard, recipientCard, infor, payer } = this.props;
+    const { user, sendCard, recipientCard, infor, payer } = this.props;
+    const {_id} = user;
 
     console.log("step 1:", sendCard);
     console.log("step 2:", recipientCard);
@@ -79,6 +86,7 @@ class Transactions extends React.Component {
           <TransactionPayer />}
           { currentStep === 5 &&
           <TransactionConfirm 
+            idUser={_id}
             sendCardNumber={sendCard.cardNumber}
             recipientCardNumber={recipientCard.cardNumber}
             amount={infor.amount}
@@ -96,7 +104,7 @@ class Transactions extends React.Component {
                 <Icon name='arrow left' />
                 </Button.Content>
               </Button>}
-              { currentStep < 6 && 
+              { currentStep < 6  && 
               <Button animated='fade' inverted color='violet' onClick={() => this.gotoNextStep()}>
                 <Button.Content visible>Next</Button.Content>
                 <Button.Content hidden>
@@ -111,6 +119,7 @@ class Transactions extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
+    user: state.auth.data,
     sendCard: state.transaction.sendCard,
     recipientCard: state.transaction.recipientCard,
     infor: state.transaction.infor,
@@ -120,6 +129,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    fetchUserData: () => dispatch(fetchUserData())
   }
 }
 

@@ -1,15 +1,20 @@
 import React, { Component } from 'react';
 import { Button, Icon, Card, Input, Radio, Select, Message, Segment, Grid, Header } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import { setTransactionPayer } from '../../actions/transaction';
+import { callOTP } from '../../actions/transaction';
 
 class TransactionConfirm extends Component {
   state = {}
 
+  submitToOTP = (idUser) => {
+    this.props.callOTP({
+      idUser: idUser
+    })
+  }
 
   render() {
-    const { sendCardNumber, recipientCardNumber, amount, message, isPayer} = this.props;
-
+    const { idUser, sendCardNumber, recipientCardNumber, amount, message, isPayer} = this.props;
+    console.log(idUser);
     return (
       <div>
       <Segment textAlign="left" className="w-600 m-auto">
@@ -22,7 +27,7 @@ class TransactionConfirm extends Component {
           <div>Who is pay fee of transaction: <strong>{isPayer ? "Payer" : "Payee"}</strong></div>
         </div>
       </Segment>
-        <Button animated='fade' color="google plus" size='big'>
+        <Button animated='fade' color="google plus" size='big' onClick={() => this.submitToOTP(idUser)}>
           <Button.Content visible>Submit</Button.Content>
           <Button.Content hidden>
             <Icon name='arrow right' />
@@ -41,7 +46,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setTransactionPayer: data => dispatch(setTransactionPayer(data))
+    callOTP: data => dispatch(callOTP(data))
   }
 }
 
