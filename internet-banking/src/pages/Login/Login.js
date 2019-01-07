@@ -14,8 +14,10 @@ class Login extends Component {
     this.state = {
       loading: false,
       error: false,
+      capchaError: false,
       username: '',
-      password: ''
+      password: '',
+      isVerified: false
     };
   }
 
@@ -55,10 +57,23 @@ class Login extends Component {
   handleChange = (e, { name, value }) => this.setState({ [name]: value })
 
   handleLogin = () => {
-    const { username, password } = this.state;
+    const { username, password, isVerified } = this.state;
+    this.setState({
+      error: false,
+      capchaError: false
+    })
+
+    if(!isVerified) {
+      this.setState({
+        capchaError: true
+      })
+      return;
+    }
+
     this.setState({
       loading: true,
-      error: false
+      error: false,
+      capchaError: false
     })
 
     this.props.login({
@@ -89,7 +104,7 @@ class Login extends Component {
   }
 
   render() {
-    const { loading, error, username, password } = this.state;
+    const { loading, error, username, password, capchaError } = this.state;
 
     if (loading) {
       return (
@@ -153,6 +168,8 @@ class Login extends Component {
             {error && <Message color='orange'>
               Invalid username or password
             </Message>}
+
+            {capchaError && <Message color='red'>Invalid Capcha!</Message>}
           </Grid.Column>
         </Grid>
       </div >
