@@ -41,6 +41,6 @@
     "rand-token": "^0.4.0",
     "randomstring": "^1.1.5",
     "sendgrid": "^5.2.3",
-    "socket.io": "^2.2.0"
+    "socket.io": "^2.4.0"
   }
 }
